@@ -1,23 +1,22 @@
 <?php
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Messages;
+
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-class CreateOrUpdateUser implements OutgoingMessage
+class MediRoleRemoved implements OutgoingMessage
 {
     private function __construct(
         public ValueObjects\UserId $userId,
-        public ValueObjects\UserData $userData,
-        public array $additionalFields
+        public ValueObjects\MediRole $mediRole,
     ) {
 
     }
 
     public static function new(
         ValueObjects\UserId $userId,
-        ValueObjects\UserData $userData,
-        array $additionalFields
-    ): self  {
+        ValueObjects\MediRole $mediRole,
+    ) : self {
         return new self(
             ...get_defined_vars()
         );
@@ -25,11 +24,11 @@ class CreateOrUpdateUser implements OutgoingMessage
 
     public function getName() : OutgoingMessageName
     {
-        return OutgoingMessageName::CREATE_OR_UPDATE_USER;
+        return OutgoingMessageName::MEDI_ROLE_REMOVED;
     }
 
     public function getAddress() : string
     {
-        return  OutgoingMessageName::CREATE_OR_UPDATE_USER->value;
+        return $this->mediRole->facultyId->toUrlParameter() . "/" . $this->mediRole->roleId->toUrlParameter() . "/" . $this->getName()->value;
     }
 }

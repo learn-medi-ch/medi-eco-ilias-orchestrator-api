@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Core\Ports;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
 class Outbounds {
 

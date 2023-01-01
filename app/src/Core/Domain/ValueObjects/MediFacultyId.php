@@ -1,11 +1,12 @@
 <?php
-namespace MediEco\IliasUserOrchestratorApi\Adapters\Repositories\MediExcel;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 enum MediFacultyId: string
 {
     case BMA = "bma";
     case RS = "rs";
     case OT = "ot";
+    case MTR = "mtr";
     case AT = "at";
     case AMB = "amb";
     case DH = "dh";

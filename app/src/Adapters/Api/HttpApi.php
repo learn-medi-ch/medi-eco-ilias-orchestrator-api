@@ -1,23 +1,24 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Adapters\Api;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
+
 use Swoole\Http;
-use MediEco\IliasUserOrchestratorApi\Adapters\Config\Config;
-use MediEco\IliasUserOrchestratorApi\Adapters;
-use MediEco\IliasUserOrchestratorApi\Core\Ports;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
+use MediEco\IliasUserOrchestratorOrbital\Adapters;
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 
-
-class HttpApi {
+class HttpApi
+{
     private function __construct(
         private Ports\Service $service
-    )
-    {
+    ) {
 
     }
 
-    public static function new(): self
+    public static function new() : self
     {
-        $config =  Config::new();
+        $config = Config::new();
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
@@ -33,25 +34,28 @@ class HttpApi {
     /**
      * @throws \Exception
      */
-    final public function handleHttpRequest(Http\Request $request, Http\Response $response): void
+    final public function handleHttpRequest(Http\Request $request, Http\Response $response) : void
     {
         $requestUri = $request->server['request_uri'];
 
         match (true) {
-            str_contains($requestUri, Ports\Task\TaskName::IMPORT_USERS->value) => $this->service->importUsers(
-                $this->getAttribute(Ports\Task\AttributeName::FACULTY_ID->value, $requestUri),
+            str_contains($requestUri, Ports\Messages\IncomingMessageName::IMPORT_USERS->value) => $this->service->importUsers(
+                $this->getAttributeFromUrl(Ports\Task\AttributeName::FACULTY_ID->value, $requestUri),
                 $this->publish($response)
-            ), //todo secret
-            default => $this->publish($response)($requestUri)
+            ),
+            str_contains($requestUri,
+                Ports\Messages\IncomingMessageName::ADDITIONAL_FIELD_VALUE_CHANGED->value) => $this->service->onAdditionalFieldValueAdded(Ports\Messages\AdditionalFieldValueChanged::fromJson($request->rawContent()), $this->publish($response)
+            ),
+            default => $this->publish($response)("endpoint does not exist: ".$requestUri)
         };
     }
-
 
     private function publish(Http\Response $response)
     {
         return function (object|string $responseObject) use ($response) {
 
-            if (is_object($responseObject) && property_exists($responseObject, 'cookies') && count($responseObject->cookies) > 0) {
+            if (is_object($responseObject) && property_exists($responseObject,
+                    'cookies') && count($responseObject->cookies) > 0) {
                 foreach ($responseObject->cookies as $name => $value) {
                     $response->setCookie($name, $value, time() + 3600);
                 }
@@ -67,7 +71,7 @@ class HttpApi {
         };
     }
 
-    private function getAttribute(string $attributeName, string $requestUri): string
+    private function getAttributeFromUrl(string $attributeName, string $requestUri) : string
     {
         $explodedParam = explode($attributeName . "/", $requestUri, 2);
         if (count($explodedParam) === 2) {

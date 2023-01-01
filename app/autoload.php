@@ -1,7 +1,7 @@
 <?php
 
 spl_autoload_register(function (string $class) {
-    $namespace = "MediEco\\IliasUserOrchestratorApi";
+    $namespace = "MediEco\\IliasUserOrchestratorOrbital";
     $baseDirectory = '/app/src';
     loadClassFile($namespace, $class, $baseDirectory);
 });

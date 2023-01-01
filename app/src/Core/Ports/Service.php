@@ -1,8 +1,8 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Core\Ports;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
-use  MediEco\IliasUserOrchestratorApi\Core\Domain;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 
 class Service
 {
@@ -30,6 +30,33 @@ class Service
         $this->dispatchMessages($recordedMessages, $publish);
     }
 
+    public function onAdditionalFieldValueAdded(Messages\AdditionalFieldValueChanged $message, callable $publish)  {
+
+        match($message->additionalFieldName) {
+             Domain\ValueObjects\MediAdditionalFieldName::BG_BERUFSBILDE->value => $this->handleSubscriptions($message->userId, $message->newAdditionalFieldValue, $message->oldAdditionalFieldValue, Domain\ValueObjects\MediRoleId::FACULTY_VOCATIONAL_TRAINER, $publish)
+        };
+    }
+
+    private function handleSubscriptions(string $userId, ?string $newValue, ?string $oldValue, Domain\ValueObjects\MediRoleId $roleId, callable $publish) {
+        $aggregate = Domain\UserAggregate::new(Domain\ValueObjects\UserId::new($userId));
+        if($newValue === null)  {
+            $oldFacultyIds = array_map('trim', explode(',', $oldValue));
+            foreach($oldFacultyIds as $facultyId) {
+                $aggregate->removeRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\MediFacultyId::from($facultyId),$roleId));
+            }
+        }
+        if($newValue !== null)  {
+            $oldFacultyIds = array_map('trim', explode(',', $oldValue));
+            $newFacultyIds = array_map('trim', explode(',', $newValue));
+            foreach($newFacultyIds as $facultyId) {
+                if(in_array($facultyId, $oldFacultyIds) === false) {
+                    $aggregate->appendRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\MediFacultyId::from($facultyId),$roleId));
+                }
+            }
+        }
+        $this->dispatchMessages($aggregate->getAndResetRecordedMessages(), $publish);
+    }
+
     private function dispatchMessages(array $recordedMessages, callable $publish) {
         $handledMessages = [];
         if (count($recordedMessages) > 0) {
@@ -38,6 +65,7 @@ class Service
                 $handledMessages[] = $message;
             }
         }
+
         $publish(json_encode($handledMessages, JSON_PRETTY_PRINT));
     }
 

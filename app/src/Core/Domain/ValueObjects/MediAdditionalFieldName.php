@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Adapters\Repositories\MediExcel;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 enum MediAdditionalFieldName: string
 {

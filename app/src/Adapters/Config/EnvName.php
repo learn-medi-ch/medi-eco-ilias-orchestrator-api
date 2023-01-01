@@ -1,16 +1,14 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Adapters\Config;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 
 enum EnvName: string
 {
-    case EXCEL_IMPORT_DIRECTORY_PATH = 'EXCEL_IMPORT_DIRECTORY_PATH';
-    case HTTP_ENDPOINT_CREATE_OR_UPDATE_USER = 'HTTP_ENDPOINT_CREATE_OR_UPDATE_USER';
+    case MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_EXCEL_IMPORT_PATH = 'MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_EXCEL_IMPORT_PATH';
+    case MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_API_CONFIG_PATH = 'MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_API_CONFIG_PATH';
 
-    public function toConfigValue(): string|int|array {
-        return match($this) {
-            EnvName::EXCEL_IMPORT_DIRECTORY_PATH => getenv(EnvName::EXCEL_IMPORT_DIRECTORY_PATH->value),
-            EnvName::HTTP_ENDPOINT_CREATE_OR_UPDATE_USER => explode(" ",getenv(EnvName::HTTP_ENDPOINT_CREATE_OR_UPDATE_USER->value))
-        };
+    public function toConfigValue() : string|int|array
+    {
+        return getenv($this->value);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Core\Ports\User;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\User;
 
 interface UserQueryRepository
 {

@@ -1,7 +1,12 @@
 /*
 !.gitignore
-!src/
-!bin/
-!autoload.php
-!docker_entrypoint.sh
-!server.php
+!LICENSE
+!README.md
+!app/
+app/*
+!app/src/
+!app/bin/
+!app/autoload.php
+!app/docker_entrypoint.sh
+!app/server.php
+!docker/

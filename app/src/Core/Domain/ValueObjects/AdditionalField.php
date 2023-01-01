@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 class AdditionalField
 {

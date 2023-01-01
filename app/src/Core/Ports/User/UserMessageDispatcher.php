@@ -1,10 +1,10 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorApi\Core\Ports\User;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\User;
 
-use MediEco\IliasUserOrchestratorApi\Core\Domain;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 
 interface UserMessageDispatcher
 {
-    public function dispatch(Domain\Messages\Message $message): void;
+    public function dispatch(Domain\Messages\OutgoingMessage $message): void;
 }
