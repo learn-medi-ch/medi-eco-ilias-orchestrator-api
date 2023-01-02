@@ -18,9 +18,9 @@ class Service
         return new self($outbounds);
     }
 
-    public function importUsers(string $contextId, callable $publish)
+    public function importUsers(Messages\ImportUsers $message, callable $publish)
     {
-        $usersToHandle = $this->outbounds->userQueryRepository->getFacultyUsers($contextId);
+        $usersToHandle = $this->outbounds->userQueryRepository->getFacultyUsers($message->facultyId->value);
         $recordedMessages = [];
         foreach ($usersToHandle as $user) {
             $aggregate = Domain\UserAggregate::new($user->userId);
@@ -28,36 +28,58 @@ class Service
             $recordedMessages = array_merge($recordedMessages, $aggregate->getAndResetRecordedMessages());
         }
         $this->dispatchMessages($recordedMessages, $publish);
-    }
 
-    public function onAdditionalFieldValueAdded(Messages\AdditionalFieldValueChanged $message, callable $publish)  {
-
-        match($message->additionalFieldName) {
-             Domain\ValueObjects\MediAdditionalFieldName::BG_BERUFSBILDE->value => $this->handleSubscriptions($message->userId, $message->newAdditionalFieldValue, $message->oldAdditionalFieldValue, Domain\ValueObjects\MediRoleId::FACULTY_VOCATIONAL_TRAINER, $publish)
-        };
-    }
-
-    private function handleSubscriptions(string $userId, ?string $newValue, ?string $oldValue, Domain\ValueObjects\MediRoleId $roleId, callable $publish) {
-        $aggregate = Domain\UserAggregate::new(Domain\ValueObjects\UserId::new($userId));
-        if($newValue === null)  {
-            $oldFacultyIds = array_map('trim', explode(',', $oldValue));
-            foreach($oldFacultyIds as $facultyId) {
-                $aggregate->removeRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\MediFacultyId::from($facultyId),$roleId));
+        if ($message->importType === AddressParameter\ImportType::FORCE_SUBSCRIPTIONS_UPDATES) {
+            foreach ($usersToHandle as $user) {
+                foreach (Domain\ValueObjects\RoleId::cases() as $roleId) {
+                    $this->handleSubscriptions(
+                        Messages\HandleSubscriptions::new(
+                            $user->userId,
+                            $roleId->toFieldName(),
+                            $user->additionalFields[$roleId->toFieldName()]->fieldValue,
+                            Domain\ValueObjects\FacultyId::asCommaSeparatedString(),
+                            $roleId
+                        ),
+                        $publish
+                    );
+                }
             }
         }
-        if($newValue !== null)  {
-            $oldFacultyIds = array_map('trim', explode(',', $oldValue));
-            $newFacultyIds = array_map('trim', explode(',', $newValue));
-            foreach($newFacultyIds as $facultyId) {
-                if(in_array($facultyId, $oldFacultyIds) === false) {
-                    $aggregate->appendRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\MediFacultyId::from($facultyId),$roleId));
+    }
+
+    public function handleSubscriptions(
+        Messages\HandleSubscriptions $message,
+        callable $publish
+    ) {
+        $aggregate = Domain\UserAggregate::new($message->userId);
+        if ($message->newAdditionalFieldValue === "" || $message->newAdditionalFieldValue === null) {
+            $oldFacultyIds = array_map('trim', explode(',', $message->oldAdditionalFieldValue));
+            foreach ($oldFacultyIds as $facultyId) {
+                $aggregate->removeRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                    $message->roleId));
+            }
+        } else {
+            $oldFacultyIds = array_map('trim', explode(',', $message->oldAdditionalFieldValue));
+            $newFacultyIds = array_map('trim', explode(',', $message->newAdditionalFieldValue));
+            foreach ($newFacultyIds as $facultyId) {
+                $aggregate->appendRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                    $message->roleId));
+            }
+            foreach ($oldFacultyIds as $facultyId) {
+                if ($facultyId === "") {
+                    continue;
+                }
+                if (in_array($facultyId, $newFacultyIds) === false) {
+                    $aggregate->removeRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                        $message->roleId));
                 }
             }
         }
         $this->dispatchMessages($aggregate->getAndResetRecordedMessages(), $publish);
     }
 
-    private function dispatchMessages(array $recordedMessages, callable $publish) {
+    private function dispatchMessages(array $recordedMessages, callable $publish)
+    {
         $handledMessages = [];
         if (count($recordedMessages) > 0) {
             foreach ($recordedMessages as $message) {

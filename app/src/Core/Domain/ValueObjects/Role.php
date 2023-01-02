@@ -1,18 +1,18 @@
 <?php
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-class MediRole
+class Role
 {
     private function __construct(
-        public MediFacultyId $facultyId,
-        public MediRoleId $roleId
+        public FacultyId $facultyId,
+        public RoleId $roleId
     ) {
 
     }
 
     public static function new(
-        MediFacultyId $facultyId,
-        MediRoleId $roleId
+        FacultyId $facultyId,
+        RoleId $roleId
     ) : self {
         return new self($facultyId, $roleId);
     }

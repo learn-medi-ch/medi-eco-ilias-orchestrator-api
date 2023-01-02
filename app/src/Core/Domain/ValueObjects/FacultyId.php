@@ -1,7 +1,7 @@
 <?php
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-enum MediFacultyId: string
+enum FacultyId: string
 {
     case BMA = "bma";
     case RS = "rs";
@@ -18,5 +18,13 @@ enum MediFacultyId: string
 
     public function toUrlParameter(): string  {
         return "faculty-id/".$this->value;
+    }
+
+    public static function asCommaSeparatedString(): string {
+        $cases = [];
+        foreach(self::cases() as $case) {
+            $cases[] = $case->value;
+        }
+        return implode(",",$cases);
     }
 }

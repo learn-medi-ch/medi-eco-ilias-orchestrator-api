@@ -6,15 +6,19 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 class UserDto
 {
+    public array $additionalFields;
+
     /**
      * @param ValueObjects\AdditionalField[] $additionalFields
      */
     private function __construct(
         public readonly ValueObjects\UserId $userId,
         public readonly ValueObjects\UserData $userData,
-        public readonly array $additionalFields
+        array $additionalFields
     ) {
-
+        foreach($additionalFields as $additionalField) {
+            $this->additionalFields[$additionalField->fieldName] = $additionalField;
+        }
     }
 
     /**

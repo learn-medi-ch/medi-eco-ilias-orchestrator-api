@@ -60,18 +60,18 @@ class UserAggregate
      * @return void
      */
     public function removeRole(
-        ValueObjects\MediRole $mediRole
+        ValueObjects\Role $mediRole
     ) : void {
-        $this->recordMessage(Messages\MediRoleRemoved::new($this->userId, $mediRole));
+        $this->recordMessage(Messages\RoleRemoved::new($this->userId, $mediRole));
     }
 
     /**
      * @return void
      */
     public function appendRole(
-        ValueObjects\MediRole $mediRole
+        ValueObjects\Role $mediRole
     ) : void {
-        $this->recordMessage(Messages\MediRoleAppended::new($this->userId, $mediRole));
+        $this->recordMessage(Messages\RoleAppended::new($this->userId, $mediRole));
     }
 
 }

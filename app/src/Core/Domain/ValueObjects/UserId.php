@@ -2,33 +2,36 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-class UserId {
+class UserId
+{
     private function __construct(
         public string $id,
-        public string $idType = "user-import-id"
+        public string $idType
     ) {
 
     }
 
     public static function new(
-        string $id
-    ): self
-    {
+        string $id,
+        string $idType
+    ) : self {
         return new self(
-            $id
+            $id,
+            $idType
         );
     }
 
     public static function fromAddressNr(
         string $addressNr
-    ): self
-    {
+    ) : self {
         return new self(
-            "medi-address_nr-".$addressNr
+            "medi-address_nr-" . $addressNr,
+            $idType = "import-id"
         );
     }
 
-    public function isEqual(string $id): bool {
-        return ($this->id === $id);
+    public function isEqual(UserId $obj) : bool
+    {
+        return (serialize($this) === serialize($obj));
     }
 }

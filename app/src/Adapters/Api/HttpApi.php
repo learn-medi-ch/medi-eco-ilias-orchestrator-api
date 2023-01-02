@@ -39,14 +39,28 @@ class HttpApi
         $requestUri = $request->server['request_uri'];
 
         match (true) {
-            str_contains($requestUri, Ports\Messages\IncomingMessageName::IMPORT_USERS->value) => $this->service->importUsers(
-                $this->getAttributeFromUrl(Ports\Task\AttributeName::FACULTY_ID->value, $requestUri),
+            str_contains(
+                $requestUri,
+                Ports\Messages\IncomingMessageName::IMPORT_USERS->value
+            ) => $this->service->importUsers(
+                Ports\Messages\ImportUsers::new(
+                    Domain\ValueObjects\FacultyId::from($this->getAttributeFromUrl(Ports\AddressParameter\ParameterName::FACULTY_ID->value,
+                        $requestUri)),
+                    Ports\AddressParameter\ImportType::from($this->getAttributeFromUrl(Ports\AddressParameter\ParameterName::IMPORT_TYPE->value,
+                        $requestUri)),
+                ),
                 $this->publish($response)
             ),
-            str_contains($requestUri,
-                Ports\Messages\IncomingMessageName::ADDITIONAL_FIELD_VALUE_CHANGED->value) => $this->service->onAdditionalFieldValueAdded(Ports\Messages\AdditionalFieldValueChanged::fromJson($request->rawContent()), $this->publish($response)
+            str_contains(
+                $requestUri,
+                Ports\Messages\IncomingMessageName::HANDLE_SUBSCRIPTIONS->value
+            ) => $this->service->handleSubscriptions(
+                Ports\Messages\HandleSubscriptions::fromJson(
+                    $request->rawContent()
+                ),
+                $this->publish($response)
             ),
-            default => $this->publish($response)("endpoint does not exist: ".$requestUri)
+            default => $this->publish($response)("endpoint does not exist: " . $requestUri)
         };
     }
 

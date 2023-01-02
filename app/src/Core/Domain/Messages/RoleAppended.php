@@ -4,18 +4,18 @@ namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Messages;
 
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-class MediRoleAppended implements OutgoingMessage
+class RoleAppended implements OutgoingMessage
 {
     private function __construct(
         public ValueObjects\UserId $userId,
-        public ValueObjects\MediRole $mediRole,
+        public ValueObjects\Role $mediRole,
     ) {
 
     }
 
     public static function new(
         ValueObjects\UserId $userId,
-        ValueObjects\MediRole $mediRole,
+        ValueObjects\Role $mediRole,
     ) : self {
         return new self(
             ...get_defined_vars()
@@ -24,7 +24,7 @@ class MediRoleAppended implements OutgoingMessage
 
     public function getName() : OutgoingMessageName
     {
-        return OutgoingMessageName::MEDI_ROLE_APPENDED;
+        return OutgoingMessageName::ROLE_APPENDED;
     }
 
     public function getAddress() : string
