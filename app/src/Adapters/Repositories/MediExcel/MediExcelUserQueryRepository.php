@@ -47,7 +47,9 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
                 ValueObjects\AdditionalField::new(ValueObjects\RoleId::FACULTY_VOCATIONAL_TRAINER->toFieldName(),
                     $row[MediExcelUserColumnId::BG_BERUFSBILDENDE->value]),
                 ValueObjects\AdditionalField::new(ValueObjects\RoleId::FACULTY_STUDENT->toFieldName(),
-                    $row[MediExcelUserColumnId::BG_STUDIERENDE->value])
+                    $row[MediExcelUserColumnId::BG_STUDIERENDE->value]),
+                ValueObjects\AdditionalField::new(ValueObjects\DegreeProgram::toFieldName(),
+                    $row[MediExcelUserColumnId::SCHOOL_CLASS->value]),
             ];
 
             $users[] = Ports\User\UserDto::new(

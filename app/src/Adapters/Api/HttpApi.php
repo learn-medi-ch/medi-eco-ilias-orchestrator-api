@@ -39,7 +39,7 @@ class HttpApi
         $requestUri = $request->server['request_uri'];
 
         match (true) {
-            str_contains(
+            str_ends_with(
                 $requestUri,
                 Ports\Messages\IncomingMessageName::IMPORT_USERS->value
             ) => $this->service->importUsers(
@@ -51,7 +51,7 @@ class HttpApi
                 ),
                 $this->publish($response)
             ),
-            str_contains(
+            str_ends_with(
                 $requestUri,
                 Ports\Messages\IncomingMessageName::HANDLE_SUBSCRIPTIONS->value
             ) => $this->service->handleSubscriptions(

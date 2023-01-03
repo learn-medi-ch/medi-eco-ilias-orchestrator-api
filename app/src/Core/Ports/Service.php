@@ -24,7 +24,7 @@ class Service
         $recordedMessages = [];
         foreach ($usersToHandle as $user) {
             $aggregate = Domain\UserAggregate::new($user->userId);
-            $aggregate->createOrUpdateUser($user->userData, $user->additionalFields);
+            $aggregate->createOrUpdateUser($user->userData,  array_values($user->additionalFields));
             $recordedMessages = array_merge($recordedMessages, $aggregate->getAndResetRecordedMessages());
         }
         $this->dispatchMessages($recordedMessages, $publish);

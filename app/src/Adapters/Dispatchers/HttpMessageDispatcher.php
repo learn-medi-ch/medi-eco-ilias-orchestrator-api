@@ -5,6 +5,7 @@ namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Dispatchers;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use stdClass;
 
 class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
 {
@@ -21,9 +22,9 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
         return new self($config);
     }
 
-    public function dispatch(Domain\Messages\OutgoingMessage $messageToDispatch) : void
+    public function dispatch(Domain\Messages\OutgoingMessage $message) : void
     {
-        $tasks =  $this->config->getOutgoingTasks(str_replace(" ","%20",$messageToDispatch->getAddress()));
+        $tasks = $this->config->getOutgoingTasks(str_replace(" ", "%20", $message->getAddress()));
         if ($tasks === null) {
             return;
         }
@@ -33,29 +34,61 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
                 continue;
             }
 
+            if (property_exists($task, 'required') === true) {
+                $abort = false;
+                foreach ($task->required as $required) {
+                    if (str_contains($required, '{$message.') === true) {
+                        $propertyName = rtrim(ltrim($required, '{$message.'), '}');
+                        if (property_exists($message,
+                                $propertyName) === false || $message->{$propertyName} === null || $message->{$propertyName} === "") {
+                            $abort = true;
+                        }
+                    }
+                }
+                if ($abort === true) {
+                    continue;
+                }
+            }
+
             $addressPath = $task->address->path;
             if ($task->address->parameters !== null) {
-                foreach ((array)$task->address->parameters as $parameterName => $parameter) {
-                    $addressPath = $this->replaceParameter($addressPath, $parameterName, $parameter, $messageToDispatch);
-                }
-            }
-            $message = $task->message;
-            if (property_exists($message, '$merge') === true) {
-                if (str_contains($message->{'$merge'}, '{$message}') === true) {
-                    unset($message->{'$merge'});
-                    $message = (object) array_merge(
-                        (array) $message, (array) $messageToDispatch);
+                foreach ((array) $task->address->parameters as $parameterName => $parameter) {
+                    $addressPath = $this->replaceParameter($addressPath, $parameterName, $parameter, $message);
                 }
             }
 
-            if (property_exists($message, '$location') === true) {
-                if (str_contains($message->{'$location'}, '{$message}') === true) {
-                    $message = $messageToDispatch;
+
+            $messageToDispatch = $task->messageToDispatch;
+
+            if (property_exists($messageToDispatch, '$merge') === true) {
+                if (str_contains($messageToDispatch->{'$merge'}, '{$message}') === true) {
+                    unset($messageToDispatch->{'$merge'});
+                    $messageToDispatch = (object) array_merge(
+                        (array) $messageToDispatch, (array) $message);
                 }
             }
 
-            $this->publish($message,
+            if (property_exists($messageToDispatch, '$location') === true) {
+                if (str_contains($messageToDispatch->{'$location'}, '{$message}') === true) {
+                    $messageToDispatch = $message;
+                }
+            }
+
+            if (property_exists($messageToDispatch, '$transform') === true) {
+                $properties = $messageToDispatch->{'$transform'};
+                $messageToDispatch = new stdClass();
+                foreach ($properties as $propertyKey => $propertyValue) {
+                    if (str_contains($propertyValue, '{$message.') === true) {
+                        $messagePropertyKey = rtrim(ltrim($propertyValue, '{$message.'), '}');
+                        $propertyValue = $message->{$messagePropertyKey};
+                    }
+                    $messageToDispatch->{$propertyKey} = $propertyValue;
+                }
+            }
+
+            $this->publish($messageToDispatch,
                 $task->address->server->protocol . "://" . $task->address->server->url . "/" . $addressPath);
+
         }
     }
 
