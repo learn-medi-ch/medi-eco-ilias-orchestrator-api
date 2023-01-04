@@ -1,5 +1,7 @@
 <?php
 
+use MediEco\IliasUserOrchestratorOrbital\Adapters\Timers\ImportUsersWithUpdateSubscriptionsOnChange;
+
 require_once "./autoload.php";
 
 $server = new Swoole\HTTP\Server('0.0.0.0', 9501);
@@ -47,4 +49,9 @@ $server->on('WorkerError', function ($server, $workerId, $workerPid, $exitCode) 
     echo $exitCode;
 });
 
+$importUsersWithUpdateSubscriptionsOnChange = ImportUsersWithUpdateSubscriptionsOnChange::new(3600000); //todo config
+$importUsersWithUpdateSubscriptionsOnChange->run();
+
+
 $server->start();
+
