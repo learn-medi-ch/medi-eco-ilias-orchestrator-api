@@ -2,23 +2,28 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\Logger;
 
-class Config
+final readonly class Config
 {
 
     private function __construct(
-        public readonly string $outgoingTasksConfigPath,
-        public readonly string $excelImportDirectoryPath,
+        public string $name,
+        public string $outgoingTasksConfigPath,
+        public string $excelImportDirectoryPath,
+        public MessageLogger $logger
     ) {
 
     }
 
     public static function new() : self
     {
+        $name = 'medi-eco-ilias-user-orchestrator-orbital';
         return new self(
+            $name,
             EnvName::MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_API_CONFIG_PATH->toConfigValue(),
             EnvName::MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_EXCEL_IMPORT_PATH->toConfigValue(),
+            Logger\HttpMessageMessageLogger::new( 'medi-eco-ilias-user-orchestrator-orbital')
         );
     }
 

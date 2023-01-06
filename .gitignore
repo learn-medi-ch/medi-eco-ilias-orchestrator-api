@@ -8,5 +8,4 @@ app/*
 !app/bin/
 !app/autoload.php
 !app/docker_entrypoint.sh
-!app/server.php
 !docker/

@@ -24,6 +24,8 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
 
     public function dispatch(Domain\Messages\OutgoingMessage $message) : void
     {
+        $this->config->logger->log($message, $message->getAddress());
+
         $tasks = $this->config->getOutgoingTasks(str_replace(" ", "%20", $message->getAddress()));
         if ($tasks === null) {
             return;
@@ -86,6 +88,8 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
                 }
             }
 
+            $this->config->logger->log($messageToDispatch, $addressPath);
+
             $this->publish($messageToDispatch,
                 $task->address->server->protocol . "://" . $task->address->server->url . "/" . $addressPath);
 
@@ -108,17 +112,12 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
 
     private function publish(object $payload, string $address) : void
     {
-        echo "send message: ". PHP_EOL;
-        echo $address . PHP_EOL;
-        echo json_encode($payload, JSON_PRETTY_PRINT). PHP_EOL;
         $ch = curl_init();
-        $responses = [];
         curl_setopt($ch, CURLOPT_URL, $address);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'x-eco-orbital: '.$this->config->name]);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $responses[] = curl_exec($ch);
-        print_r($responses);
+        curl_exec($ch);
         curl_close($ch);
     }
 }

@@ -15,7 +15,7 @@ function printBanner {
 }
 
 function startServer {
-  php /app/server.php
+  php /opt/flux-eco-http-server-sidecar/server.php
 }
 
 printBanner
