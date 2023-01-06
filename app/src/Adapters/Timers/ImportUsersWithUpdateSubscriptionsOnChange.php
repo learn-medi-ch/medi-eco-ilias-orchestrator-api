@@ -3,7 +3,7 @@
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Timers;
 
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\FacultyId;
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports\AddressParameter\ImportType;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\ImportType;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports\Messages\IncomingMessageName;
 use Swoole\Timer;
 
@@ -25,13 +25,9 @@ class ImportUsersWithUpdateSubscriptionsOnChange
     {
         //every hour
         Timer::tick($this->frequencyInMs, function () {
-
             foreach(FacultyId::cases() as $facultyId) {
                 $this->runFacultyImport($facultyId);
             }
-
-
-
         });
     }
 

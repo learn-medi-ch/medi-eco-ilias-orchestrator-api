@@ -8,14 +8,14 @@ class ImportUsers implements IncomingMessage
 {
     private function __construct(
         public Domain\ValueObjects\FacultyId $facultyId,
-        public Ports\AddressParameter\ImportType $importType,
+        public Domain\ValueObjects\ImportType $importType,
     ) {
 
     }
 
     public static function new(
         Domain\ValueObjects\FacultyId $facultyId,
-        Ports\AddressParameter\ImportType $importType,
+        Domain\ValueObjects\ImportType $importType,
     ) : self {
         return new self(...get_defined_vars());
     }

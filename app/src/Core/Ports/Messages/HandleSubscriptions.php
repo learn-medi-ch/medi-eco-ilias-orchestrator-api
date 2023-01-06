@@ -27,7 +27,7 @@ class HandleSubscriptions implements IncomingMessage
 
     public function getName() : IncomingMessageName
     {
-        return IncomingMessageName::ADDITIONAL_FIELD_VALUE_CHANGED;
+        return IncomingMessageName::HANDLE_SUBSCRIPTIONS;
     }
 
     public static function fromJson(string $json) : self

@@ -2,7 +2,7 @@
 set -e
 
 function printBanner {
-  echo "medi-eco-ilias-user-orchestrator-api Copyright (C) 2021 https://medi.ch";
+  echo "medi-eco-ilias-user-orchestrator-orbital Copyright (C) 2021 https://medi.ch";
   echo "";
   echo "This program is free software: you can redistribute it and/or modify"
   echo "it under the terms of the GNU General Public License as published"

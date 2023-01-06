@@ -27,7 +27,6 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     public function getFacultyUsers(string $facultyId) : array
     {
         $users = [];
-        echo ValueObjects\FacultyId::from($facultyId)->toExcelFilePath($this->excelImportDirectoryPath);
         $xlsx = SimpleXLSX::parse(ValueObjects\FacultyId::from($facultyId)->toExcelFilePath($this->excelImportDirectoryPath));
         foreach ($xlsx->rows() as $rowIndex => $row) {
             $additionalFields = [];

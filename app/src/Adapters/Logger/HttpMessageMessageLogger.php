@@ -28,16 +28,13 @@ final readonly class HttpMessageMessageLogger implements Config\MessageLogger
 
     private function publish(object $payload, string $address) : void
     {
-        echo json_encode($payload, JSON_PRETTY_PRINT) . PHP_EOL;
         $ch = curl_init();
-        $responses = [];
         curl_setopt($ch, CURLOPT_URL,
             $this->serverProtocol . "://" . $this->serverUrl . ":" . $this->serverPort . "/" . $address);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'x-eco-orbital: '.$this->name]);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $responses[] = curl_exec($ch);
-        print_r($responses);
+        curl_exec($ch);
         curl_close($ch);
     }
 }

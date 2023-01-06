@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\AddressParameter;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 enum ImportType: string {
     case UPDATE_SUBSCRIPTIONS_ON_CHANGE = "update-subscriptions-on-change";

@@ -9,6 +9,6 @@ enum IncomingMessageName: string
     case HANDLE_DEGREE_SUBSCRIPTIONS = "handle-degree-subscriptions";
 
     public function toUrlParameter(): string  {
-        return "import-type/".$this->value;
+        return $this->value;
     }
 }

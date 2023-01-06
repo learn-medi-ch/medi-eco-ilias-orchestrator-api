@@ -41,18 +41,6 @@ class HttpApi
         match (true) {
             str_ends_with(
                 $requestUri,
-                Ports\Messages\IncomingMessageName::IMPORT_USERS->value
-            ) => $this->service->importUsers(
-                Ports\Messages\ImportUsers::new(
-                    Domain\ValueObjects\FacultyId::from($this->getAttributeFromUrl(Ports\AddressParameter\ParameterName::FACULTY_ID->value,
-                        $requestUri)),
-                    Ports\AddressParameter\ImportType::from($this->getAttributeFromUrl(Ports\AddressParameter\ParameterName::IMPORT_TYPE->value,
-                        $requestUri)),
-                ),
-                $this->publish($response)
-            ),
-            str_ends_with(
-                $requestUri,
                 Ports\Messages\IncomingMessageName::HANDLE_SUBSCRIPTIONS->value
             ) => $this->service->handleSubscriptions(
                 Ports\Messages\HandleSubscriptions::fromJson(

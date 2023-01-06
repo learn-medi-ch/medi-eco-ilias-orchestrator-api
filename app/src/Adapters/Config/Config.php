@@ -35,11 +35,13 @@ final readonly class Config
     {
         $filePath = $this->outgoingTasksConfigPath . "/outgoing/" . $addressPath . ".json";
         if ($this->fileExists($filePath) === false) {
-            echo "FilePath not exists  " . $filePath . PHP_EOL;
+            $error = new \stdClass();
+            $error->title = "FilePath not exists  ";
+            $error->data = $filePath;
+            $this->logger->log($error,$this->name."/noTaskFound");
             return null;
         }
         $messageConfig = json_decode(file_get_contents($filePath));
-        print_r($messageConfig);
         $tasks = [];
         if (property_exists($messageConfig, "tasks")) {
             foreach ($messageConfig->tasks as $task) {

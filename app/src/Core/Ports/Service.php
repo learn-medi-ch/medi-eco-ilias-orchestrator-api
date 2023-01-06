@@ -24,12 +24,12 @@ class Service
         $recordedMessages = [];
         foreach ($usersToHandle as $user) {
             $aggregate = Domain\UserAggregate::new($user->userId);
-            $aggregate->createOrUpdateUser($user->userData,  array_values($user->additionalFields));
+            $aggregate->createOrUpdateUser($user->userData, array_values($user->additionalFields));
             $recordedMessages = array_merge($recordedMessages, $aggregate->getAndResetRecordedMessages());
         }
         $this->dispatchMessages($recordedMessages, $publish);
 
-        if ($message->importType === AddressParameter\ImportType::FORCE_SUBSCRIPTIONS_UPDATES) {
+        if ($message->importType === Domain\ValueObjects\ImportType::FORCE_SUBSCRIPTIONS_UPDATES) {
             foreach ($usersToHandle as $user) {
                 foreach (Domain\ValueObjects\RoleId::cases() as $roleId) {
                     $this->handleSubscriptions(
@@ -75,10 +75,12 @@ class Service
                 }
             }
         }
-        $this->dispatchMessages($aggregate->getAndResetRecordedMessages(), $publish);
+        $this->dispatchMessages($aggregate->getAndResetRecordedMessages());
+
+        $publish("Ok: " . $message->getName()->toUrlParameter());
     }
 
-    private function dispatchMessages(array $recordedMessages, callable $publish)
+    private function dispatchMessages(array $recordedMessages)
     {
         $handledMessages = [];
         if (count($recordedMessages) > 0) {
@@ -87,8 +89,6 @@ class Service
                 $handledMessages[] = $message;
             }
         }
-
-        $publish(json_encode($handledMessages, JSON_PRETTY_PRINT));
     }
 
 }
