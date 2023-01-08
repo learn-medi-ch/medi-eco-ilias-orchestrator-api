@@ -27,7 +27,7 @@ class Service
             $aggregate->createOrUpdateUser($user->userData, array_values($user->additionalFields));
             $recordedMessages = array_merge($recordedMessages, $aggregate->getAndResetRecordedMessages());
         }
-        $this->dispatchMessages($recordedMessages, $publish);
+        $this->dispatchMessages($recordedMessages);
 
         if ($message->importType === Domain\ValueObjects\ImportType::FORCE_SUBSCRIPTIONS_UPDATES) {
             foreach ($usersToHandle as $user) {
@@ -82,11 +82,9 @@ class Service
 
     private function dispatchMessages(array $recordedMessages)
     {
-        $handledMessages = [];
         if (count($recordedMessages) > 0) {
             foreach ($recordedMessages as $message) {
                 $this->outbounds->userMessageDispatcher->dispatch($message);
-                $handledMessages[] = $message;
             }
         }
     }

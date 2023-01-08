@@ -6,7 +6,6 @@ use Swoole\Http;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 
 class HttpApi
 {
@@ -52,7 +51,7 @@ class HttpApi
         };
     }
 
-    private function publish(Http\Response $response)
+    private function publish(Http\Response $response) : \Closure
     {
         return function (object|string $responseObject) use ($response) {
 

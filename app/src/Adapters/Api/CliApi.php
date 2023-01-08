@@ -30,16 +30,16 @@ class CliApi
         );
     }
 
-    public function importUsers(Ports\Messages\ImportUsers $importUsers)
+    public function importUsers(Ports\Messages\ImportUsers $importUsers) : void
     {
         $this->service->importUsers($importUsers, fn($responseObject) => $this->publish($responseObject));
     }
 
-    public function publish(object|string $responseObject)
+    public function publish(object|string $responseObject) : void
     {
         $this->counter = $this->counter + 1;
         $response = $responseObject;
-        if (is_string($responseObject === false)) {
+        if (is_string($responseObject) === false) {
             $response = json_encode($responseObject, JSON_PRETTY_PRINT);
         }
 

@@ -14,9 +14,14 @@ function printBanner {
   echo "or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.";
 }
 
+function extractMessageDispatcherConfig  {
+  flux-eco-installer-orbital.extract-archive-url-to-folder $MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_DISPATCHER_CONFIG_ARCHIVE_PATH $FLUX_ECO_DISPATCHER_SYNAPSE_CONFIG_DIRECTORY_PATH
+}
+
 function startServer {
-  php /opt/flux-eco-http-server-sidecar/server.php
+  flux-eco-http-synapse.start
 }
 
 printBanner
+extractMessageDispatcherConfig
 startServer

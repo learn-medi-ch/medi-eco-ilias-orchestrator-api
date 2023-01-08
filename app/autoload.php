@@ -2,14 +2,20 @@
 
 spl_autoload_register(function (string $class) {
     $namespace = "MediEco\\IliasUserOrchestratorOrbital";
-    $baseDirectory = '/app/src';
-    loadClassFile($namespace, $class, $baseDirectory);
+    $baseDirectory = '/opt/medi-eco-ilias-user-orchestrator-orbital/app/src';
+    loadClassFileIliasUserOrchestratorOrbital($namespace, $class, $baseDirectory);
 });
 
 spl_autoload_register(function (string $class) {
     $namespace = "Shuchkin";
-    $baseDirectory = '/app/libs/simple-xlsx/src';
-    loadClassFile($namespace, $class, $baseDirectory);
+    $baseDirectory = '/opt/medi-eco-ilias-user-orchestrator-orbital/app/libs/simple-xlsx/src';
+    loadClassFileIliasUserOrchestratorOrbital($namespace, $class, $baseDirectory);
+});
+
+spl_autoload_register(function (string $class) {
+    $namespace = "FluxEco\\DispatcherSynapse";
+    $baseDirectory = '/opt/flux-eco-dispatcher-synapse/app/src';
+    loadClassFileIliasUserOrchestratorOrbital($namespace, $class, $baseDirectory);
 });
 
 
@@ -19,7 +25,7 @@ spl_autoload_register(function (string $class) {
  * @param string $baseDirectory
  * @return void
  */
-function loadClassFile(string $namespace, string $class, string $baseDirectory): void
+function loadClassFileIliasUserOrchestratorOrbital(string $namespace, string $class, string $baseDirectory): void
 {
     $classNameParts = explode($namespace, $class);
     // not our responsibility
