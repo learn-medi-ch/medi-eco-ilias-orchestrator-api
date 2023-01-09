@@ -6,10 +6,13 @@ enum FacultyId: string
     case BMA = "bma";
     case RS = "rs";
     case OT = "ot";
+    case OT_UP = "OT"; //todo
+
     case MTR = "mtr";
     case AT = "at";
     case AMB = "amb";
     case DH = "dh";
+    case DIREKTION = "direktion";
 
     public function toExcelFilePath(string $excelImportDirectory): string
     {

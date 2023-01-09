@@ -1,4 +1,4 @@
-FROM fluxms/flux-eco-biotope:v2022-01-08-2 AS medi-eco-ilias-user-orchestrator-orbital
+FROM fluxms/flux-eco-biotope:v2022-01-08-4 AS medi-eco-ilias-user-orchestrator-orbital
 
 # |-------------------------------------------------------------------------- \
 # | author martin@fluxlabs.ch
