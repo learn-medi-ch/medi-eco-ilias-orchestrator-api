@@ -1,5 +1,5 @@
 FROM fluxms/flux-eco-biotope:v2022-01-08-4 AS medi-eco-ilias-user-orchestrator-orbital
-
+RUN apk add --update busybox-suid
 # |-------------------------------------------------------------------------- \
 # | author martin.studer@medi.ch
 # |-------------------------------------------------------------------------- \
