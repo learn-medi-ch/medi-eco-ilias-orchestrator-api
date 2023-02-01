@@ -4,9 +4,9 @@
 !README.md
 !app/
 app/*
-!app/libs/
-!app/src/
 !app/bin/
+!app/cli/
+!app/src/
 !app/autoload.php
 !app/docker_entrypoint.sh
 !docker/
