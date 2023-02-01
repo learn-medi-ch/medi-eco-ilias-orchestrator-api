@@ -1,7 +1,7 @@
 FROM fluxms/flux-eco-biotope:v2022-01-08-4 AS medi-eco-ilias-user-orchestrator-orbital
 
 # |-------------------------------------------------------------------------- \
-# | author martin@fluxlabs.ch
+# | author martin.studer@medi.ch
 # |-------------------------------------------------------------------------- \
 
 # |-------------------------------------------------------------------------- \
@@ -23,11 +23,13 @@ RUN chmod a+rx /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.install-l
 COPY --chown=www-data:www-data ./app/bin/medi-eco-ilias-user-orchestrator-orbital.import-all-force-subscriptions-updates /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.import-all-force-subscriptions-updates
 RUN chmod a+rx /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.import-all-force-subscriptions-updates
 
-COPY --chown=www-data:www-data ./app/bin/medi-eco-ilias-user-orchestrator-orbital.import-at-force-subscriptions-updates /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.import-at-force-subscriptions-updates
-RUN chmod a+rx /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.import-at-force-subscriptions-updates
-
 USER root
 RUN medi-eco-ilias-user-orchestrator-orbital.install-libraries
+
+COPY ./app/cron/crontab /etc/crontab
+RUN crontab /etc/crontab
+RUN touch /var/log/cron.log
+CMD crond -f
 
 USER www-data
 WORKDIR /opt/medi-eco-ilias-user-orchestrator-orbital/app

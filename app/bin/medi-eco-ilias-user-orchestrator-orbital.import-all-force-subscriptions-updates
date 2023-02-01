@@ -1,2 +1,7 @@
 #!/bin/sh
-php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importAllForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importBMAForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importAtForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importDHForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importMTRForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importOtForceSubscriptionsUpdates.php
+php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importRSForceSubscriptionsUpdates.php

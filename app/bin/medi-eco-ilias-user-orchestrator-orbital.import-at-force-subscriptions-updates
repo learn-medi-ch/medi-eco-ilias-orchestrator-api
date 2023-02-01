@@ -1,2 +1,0 @@
-#!/bin/sh
-php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/importAtForceSubscriptionsUpdates.php
