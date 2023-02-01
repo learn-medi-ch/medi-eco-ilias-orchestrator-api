@@ -31,7 +31,6 @@ RUN crontab /etc/crontab
 RUN touch /var/log/cron.log
 CMD crond -f
 
-USER www-data
 WORKDIR /opt/medi-eco-ilias-user-orchestrator-orbital/app
 
 ENTRYPOINT ["sh", "./docker_entrypoint.sh"]
