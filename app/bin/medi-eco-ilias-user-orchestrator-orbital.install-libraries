@@ -2,7 +2,7 @@
 
 set -e
 
-libs="`dirname "$0"`/../libs"
+libs="`dirname "$0"`/opt/medi-eco-ilias-user-orchestrator-orbital/app/libs"
 
 installLibrary() {
     (mkdir -p "$libs/$1" && cd "$libs/$1" && wget -O - "$2" | tar -xz --strip-components=1)
