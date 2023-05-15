@@ -29,6 +29,9 @@ class HttpMessageDispatcher implements Ports\User\UserMessageDispatcher
      */
     public function dispatch(Domain\Messages\OutgoingMessage $message) : void
     {
+        echo "outgoing".PHP_EOL;
+        print_r($message);
+        echo PHP_EOL;
         DispatcherSynapse\Adapters\Api\Api::new()->dispatch($message->getAddress(), $message);
     }
 }

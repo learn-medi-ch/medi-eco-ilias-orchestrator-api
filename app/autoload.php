@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/libs/flux-ilias-rest-api-client/autoload.php';
 
 spl_autoload_register(function (string $class) {
     $namespace = "MediEco\\IliasUserOrchestratorOrbital";
