@@ -2,7 +2,7 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
-use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
+use client\src\Adapter\Api\IliasRestApiClient;
 
 class Outbounds {
 

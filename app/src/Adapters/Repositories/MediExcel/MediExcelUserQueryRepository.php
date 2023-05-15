@@ -5,7 +5,7 @@ namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Repositories\MediExcel;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-use Shuchkin\SimpleXLSX;
+use xlsx\src\SimpleXLSX;
 
 class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
 {

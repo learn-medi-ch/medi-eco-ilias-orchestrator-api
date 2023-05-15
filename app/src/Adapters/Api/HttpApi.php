@@ -2,7 +2,7 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
 
-use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
+use client\src\Adapter\Api\IliasRestApiClient;
 use mysql_xdevapi\Exception;
 use Swoole\Http;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
@@ -13,8 +13,8 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 class HttpApi
 {
     private function __construct(
-        private Ports\Service      $service,
-        private IliasRestApiClient $iliasRestApiClient,
+        private Ports\Service                             $service,
+        private client\src\Adapter\Api\IliasRestApiClient $iliasRestApiClient,
     )
     {
 
@@ -24,7 +24,7 @@ class HttpApi
     {
         $config = Config::new();
 
-        $iliasRestApiClient =  IliasRestApiClient::new();
+        $iliasRestApiClient =  client\src\Adapter\Api\IliasRestApiClient::new();
 
         return new self(
             Ports\Service::new(
@@ -36,7 +36,7 @@ class HttpApi
                     Adapters\Dispatchers\HttpMessageDispatcher::new($config)
                 )
             ),
-            IliasRestApiClient::new()
+            client\src\Adapter\Api\IliasRestApiClient::new()
         );
     }
 
