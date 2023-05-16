@@ -10,7 +10,7 @@ class AdditionalUserFieldDto
      * @param ValueObjects\AdditionalField[] $additionalFields
      */
     private function __construct(
-        public readonly ValueObjects\UserId $userId,
+        public readonly ValueObjects\UserImportId    $userId,
         public readonly ValueObjects\AdditionalField $additionalField
     ) {
 
@@ -20,7 +20,7 @@ class AdditionalUserFieldDto
      * @return static
      */
     public static function new(
-        ValueObjects\UserId $userId,
+        ValueObjects\UserImportId    $userId,
         ValueObjects\AdditionalField $additionalField
     ) : self {
         return new self(...get_defined_vars());

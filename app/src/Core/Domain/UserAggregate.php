@@ -7,11 +7,11 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 class UserAggregate
 {
     private array $recordedMessages = [];
-    public ?ValueObjects\UserData $userData = null;
+    public ?ValueObjects\MediStudentData $userData = null;
     public array $additionalFields = [];
 
     private function __construct(
-        private ValueObjects\UserId $userId
+        private ValueObjects\UserImportId $userId
     ) {
 
     }
@@ -20,7 +20,7 @@ class UserAggregate
      * @return static
      */
     public static function new(
-        ValueObjects\UserId $userId
+        ValueObjects\UserImportId $userId
     ) : self {
         return new self($userId);
     }
@@ -42,8 +42,8 @@ class UserAggregate
      * @return void
      */
     public function createOrUpdateUser(
-        ValueObjects\UserData $userData,
-        array $additionalFields
+        ValueObjects\MediStudentData $userData,
+        array                        $additionalFields
     ) : void {
         $createOrUpdateUser = Messages\CreateOrUpdateUser::new($this->userId, $userData, $additionalFields);
         $this->applyCreateOrUpdateUser($createOrUpdateUser);

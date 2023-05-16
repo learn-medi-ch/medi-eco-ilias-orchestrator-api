@@ -5,14 +5,14 @@ class Role
 {
     private function __construct(
         public FacultyId $facultyId,
-        public RoleId $roleId
+        public RoleIdSuffix $roleId
     ) {
 
     }
 
     public static function new(
         FacultyId $facultyId,
-        RoleId $roleId
+        RoleIdSuffix $roleId
     ) : self {
         return new self($facultyId, $roleId);
     }

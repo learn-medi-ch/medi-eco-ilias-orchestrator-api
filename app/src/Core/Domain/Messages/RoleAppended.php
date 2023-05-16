@@ -7,15 +7,15 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 class RoleAppended implements OutgoingMessage
 {
     private function __construct(
-        public ValueObjects\UserId $userId,
-        public ValueObjects\Role $mediRole,
+        public ValueObjects\UserImportId $userId,
+        public ValueObjects\Role         $mediRole,
     ) {
 
     }
 
     public static function new(
-        ValueObjects\UserId $userId,
-        ValueObjects\Role $mediRole,
+        ValueObjects\UserImportId $userId,
+        ValueObjects\Role         $mediRole,
     ) : self {
         return new self(
             ...get_defined_vars()

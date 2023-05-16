@@ -2,8 +2,8 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
 
-use client\src\Adapter\Api\IliasRestApiClient;
-use mysql_xdevapi\Exception;
+
+use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use Swoole\Http;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
@@ -13,8 +13,8 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 class HttpApi
 {
     private function __construct(
-        private Ports\Service                             $service,
-        private client\src\Adapter\Api\IliasRestApiClient $iliasRestApiClient,
+        private Ports\Service      $service,
+        private IliasRestApiClient $iliasRestApiClient,
     )
     {
 
@@ -24,19 +24,17 @@ class HttpApi
     {
         $config = Config::new();
 
-        $iliasRestApiClient =  client\src\Adapter\Api\IliasRestApiClient::new();
+        $iliasRestApiClient = IliasRestApiClient::new();
 
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
-                    $iliasRestApiClient,
-                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new(
-                        $config->excelImportDirectoryPath
-                    ),
+                    Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath),
                     Adapters\Dispatchers\HttpMessageDispatcher::new($config)
                 )
             ),
-            client\src\Adapter\Api\IliasRestApiClient::new()
+            IliasRestApiClient::new()
         );
     }
 

@@ -6,21 +6,21 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 class HandleSubscriptions implements IncomingMessage
 {
     private function __construct(
-        public Domain\ValueObjects\UserId $userId,
-        public string $additionalFieldName,
-        public null|int|string $newAdditionalFieldValue,
-        public null|int|string $oldAdditionalFieldValue,
-        public Domain\ValueObjects\RoleId $roleId
+        public Domain\ValueObjects\UserImportId $userId,
+        public string                           $additionalFieldName,
+        public null|int|string                  $newAdditionalFieldValue,
+        public null|int|string                  $oldAdditionalFieldValue,
+        public Domain\ValueObjects\RoleIdSuffix $roleId
     ) {
 
     }
 
     public static function new(
-        Domain\ValueObjects\UserId $userId,
-        string $additionalFieldName,
-        null|int|string $newAdditionalFieldValue,
-        null|int|string $oldAdditionalFieldValue,
-        Domain\ValueObjects\RoleId $roleId,
+        Domain\ValueObjects\UserImportId $userId,
+        string                           $additionalFieldName,
+        null|int|string                  $newAdditionalFieldValue,
+        null|int|string                  $oldAdditionalFieldValue,
+        Domain\ValueObjects\RoleIdSuffix $roleId,
     ) : self {
         return new self($userId, $additionalFieldName, $newAdditionalFieldValue, $oldAdditionalFieldValue, $roleId);
     }
@@ -34,14 +34,14 @@ class HandleSubscriptions implements IncomingMessage
     {
         $obj = json_decode($json);
         return new self(
-            Domain\ValueObjects\UserId::new(
+            Domain\ValueObjects\UserImportId::new(
                 $obj->userId->id,
                 $obj->userId->idType,
             ),
             $obj->additionalFieldName,
             $obj->newAdditionalFieldValue,
             $obj->oldAdditionalFieldValue,
-            Domain\ValueObjects\RoleId::from($obj->roleId)
+            Domain\ValueObjects\RoleIdSuffix::from($obj->roleId)
         );
     }
 }
