@@ -11,30 +11,19 @@ enum MediFacultyRoleId: string
     case FACULTY_VOCATIONAL_TRAINERS = "faculty-vocational-trainers";
 
 
-    public function toUrlParameter(): string
+    public function toImportId(string $facultyId): string
     {
-        return "role-id/" . $this->value;
-    }
-
-    public function toRoleImportIdString(string $facultyId): string
-    {
-        return match ($this) {
-            MediFacultyRoleId::FACULTY_STUDENTS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_LECTURERS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_EXPERTS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_ADMINS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_VOCATIONAL_TRAINERS => "role_" . $facultyId . "-" . $this->value,
-        };
+        return "role_" . $facultyId . "-" . $this->value;
     }
 
     public function toRoleTitle(?string $facultyId): string
     {
         return match ($this) {
-            MediFacultyRoleId::FACULTY_STUDENTS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_LECTURERS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_EXPERTS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_ADMINS => "role_" . $facultyId . "-" . $this->value,
-            MediFacultyRoleId::FACULTY_VOCATIONAL_TRAINERS => "role_" . $facultyId . "-" . $this->value
+            MediFacultyRoleId::FACULTY_STUDENTS => "BG_" . strtoupper($facultyId) . "_Studierende",
+            MediFacultyRoleId::FACULTY_LECTURERS => "BG_" . strtoupper($facultyId) . "_Dozierende",
+            MediFacultyRoleId::FACULTY_EXPERTS => "BG_" . strtoupper($facultyId) . "_Fachteam",
+            MediFacultyRoleId::FACULTY_ADMINS => "BG_" . strtoupper($facultyId) . "_Admin",
+            MediFacultyRoleId::FACULTY_VOCATIONAL_TRAINERS => "BG_" . strtoupper($facultyId) . "_Berufsbildende",
         };
     }
 }

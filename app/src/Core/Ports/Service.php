@@ -27,9 +27,9 @@ class Service
         $roleRepository = $this->outbounds->roleRepository;
 
         foreach(Domain\ValueObjects\MediGeneralRoleId::cases() as $roleIdSuffix) {
-            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toRoleImportIdString());
+            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toImportId());
             match ($role) {
-                null => $roleRepository->createGlobalRole($roleIdSuffix->toRoleImportIdString(), $roleIdSuffix->toRoleTitle()),
+                null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId(), $roleIdSuffix->toRoleTitle()),
                 default => []
             };
         }
@@ -47,9 +47,9 @@ class Service
     private function createMediFacultyRoles(string $facultyId): void {
         $roleRepository = $this->outbounds->roleRepository;
         foreach(Domain\ValueObjects\MediFacultyRoleId::cases() as $roleIdSuffix) {
-            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toRoleImportIdString($facultyId));
+            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toImportId($facultyId));
             match ($role) {
-                null => $roleRepository->createGlobalRole($roleIdSuffix->toRoleImportIdString($facultyId), $roleIdSuffix->toRoleTitle($facultyId)),
+                null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId($facultyId), $roleIdSuffix->toRoleTitle($facultyId)),
                 default => []
             };
         }
