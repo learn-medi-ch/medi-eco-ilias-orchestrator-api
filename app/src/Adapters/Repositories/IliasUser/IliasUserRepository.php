@@ -52,7 +52,7 @@ class IliasUserRepository implements Ports\User\UserRepository
     ): void
     {
         $this->iliasRestApiClient->updateUserByImportId(
-            $userData->importId->id,
+            $userData->importId,
             IliasUserAdapter::fromDomain($userData)->toUserDiffDto()
         );
     }
@@ -206,7 +206,7 @@ class IliasUserRepository implements Ports\User\UserRepository
         return match ($userDto) {
             null => null,
             default => Domain\ValueObjects\MediStudentData::new(
-                Domain\ValueObjects\MediUserImportId::new($userDto->import_id),
+                $userDto->import_id,
                 $userDto->email,
                 $userDto->first_name,
                 $userDto->last_name,
@@ -215,5 +215,20 @@ class IliasUserRepository implements Ports\User\UserRepository
                 ""
             )
         };
+    }
+
+    public function getSubscribedRoleImportIds(string $userImportId): array
+    {
+        $roles = $this->iliasRestApiClient->getUserRoles(null, $userImportId);
+        $roleImportIds = [];
+        foreach ($roles as $role) {
+            $roleImportIds[] = $role->role_import_id;
+        }
+        return $roleImportIds;
+    }
+
+    public function subscribeToRole(string $userImportId, $roleImportId): void
+    {
+        $this->iliasRestApiClient->addUserRoleByImportIdByRoleImportId($userImportId, $roleImportId);
     }
 }

@@ -10,11 +10,11 @@ class MediStaffData implements UserData
 
 
     private function __construct(
-        public MediUserImportId $importId,
+        public string $importId,
         public string           $email,
         public string           $firstName,
         public string           $lastName,
-        public array            $roleIds,
+        public array            $roleImportIds,
         public array            $additionalFields
     )
     {
@@ -27,7 +27,7 @@ class MediStaffData implements UserData
      * @return static
      */
     public static function new(
-        MediUserImportId $importId,
+        string $importId,
         string           $email,
         string           $firstName,
         string           $lastName,

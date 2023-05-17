@@ -4,6 +4,7 @@ namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
 use  MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
+//todo split up in userService, CategoryService, RoleService....
 class Service
 {
 
@@ -97,10 +98,10 @@ class Service
     private function createMediFacultyRoles(string $facultyId): void
     {
         $roleRepository = $this->outbounds->roleRepository;
-        foreach (ValueObjects\MediFacultyRoleId::cases() as $roleIdSuffix) {
-            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toImportId($facultyId));
+        foreach (ValueObjects\MediFacultyRoleId::cases() as $roleId) {
+            $role = $roleRepository->getRoleByRoleByImportId($roleId->toImportId($facultyId));
             match ($role) {
-                null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId($facultyId), $roleIdSuffix->toTitle($facultyId)),
+                null => $roleRepository->createLocalRole(ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId), $roleId->toImportId($facultyId), $roleId->toTitle($facultyId)),
                 default => []
             };
         }
@@ -197,16 +198,11 @@ class Service
         $recordedMessages = [];
         foreach ($usersToHandle as $user) {
             echo "*********" . PHP_EOL;
-            echo $user->importId->id . PHP_EOL;
+            echo $user->importId . PHP_EOL;
             echo "*********" . PHP_EOL;
-            $iliasUser = $iliasUserRepository->getUserByImportId(
-                $user->importId->id
-            );
 
-            match ($iliasUser) {
-                null => $this->createUser($user),
-                default => $this->updateUser($user),
-            };
+            $this->createOrUpdateUser($user);
+            $this->subscribeToRoles($user->importId, $user->roleImportIds);
 
 
             // $this->outbounds->iliasRestApiClient->get
@@ -251,6 +247,18 @@ class Service
         $publish("Ok: " . $message->getName()->toUrlParameter());
     }
 
+    private function createOrUpdateUser(ValueObjects\UserData $user)
+    {
+        $iliasUserRepository = $this->outbounds->iliasUserRepository; //todo
+        $iliasUser = $iliasUserRepository->getUserByImportId(
+            $user->importId
+        );
+        match ($iliasUser) {
+            null => $this->createUser($user),
+            default => $this->updateUser($user),
+        };
+    }
+
     private function createUser(ValueObjects\UserData $userData): void
     {
         $iliasUserRepository = $this->outbounds->iliasUserRepository;
@@ -263,9 +271,24 @@ class Service
         $iliasUserRepository->update($userData);
     }
 
-    private function subscribeToRoles(ValueObjects\UserData $userData)
+    private function subscribeToRoles(string $userImportId, array $roleImportIds): void
     {
+        print_r($roleImportIds);
 
+        $iliasUserRepository = $this->outbounds->iliasUserRepository;
+        $subscribedRoleImportIds = $iliasUserRepository->getSubscribedRoleImportIds($userImportId);
+        foreach ($roleImportIds as $roleImportIdToSubscribeTo) {
+
+            echo "*********" . PHP_EOL;
+            echo "subscribe user to Role...." . PHP_EOL;
+            echo $userImportId . PHP_EOL;
+            echo $roleImportIdToSubscribeTo . PHP_EOL;
+            echo "*********" . PHP_EOL;
+
+            if (in_array($roleImportIdToSubscribeTo, $subscribedRoleImportIds) === false) {
+                $iliasUserRepository->subscribeToRole($userImportId, $roleImportIdToSubscribeTo);
+            }
+        }
     }
 
     /*public function handleSubscriptions(

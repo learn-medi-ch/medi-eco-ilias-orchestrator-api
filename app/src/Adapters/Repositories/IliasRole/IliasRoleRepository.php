@@ -46,8 +46,12 @@ final readonly class IliasRoleRepository implements Ports\Role\RoleRepository
         ));
     }
 
-    public function createLocalRole(string $importId, string $title, int $refId)
+    public function createLocalRole(string $parentImportId, string $importId, string $title)
     {
-        // TODO: Implement createLocalRole() method.
+        $this->iliasRestApiClient->createRoleToImportId($parentImportId, RoleDiffDto::new(
+            $importId,
+            $title,
+            ""
+        ));
     }
 }

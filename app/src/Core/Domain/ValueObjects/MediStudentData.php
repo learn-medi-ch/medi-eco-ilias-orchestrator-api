@@ -11,12 +11,12 @@ readonly class MediStudentData implements UserData
 
 
     private function __construct(
-        public MediUserImportId $importId,
-        public string           $email,
-        public string           $firstName,
-        public string           $lastName,
-        public array            $roleIds,
-        public array            $additionalFields
+        public string $importId,
+        public string $email,
+        public string $firstName,
+        public string $lastName,
+        public array  $roleImportIds,
+        public array  $additionalFields
     )
     {
         $this->login = $email;
@@ -28,13 +28,13 @@ readonly class MediStudentData implements UserData
      * @return static
      */
     public static function new(
-        MediUserImportId $importId,
-        string           $email,
-        string           $firstName,
-        string           $lastName,
-        array            $roleIds,
-        string           $studentFaculty,
-        string           $schoolClass
+        string $importId,
+        string $email,
+        string $firstName,
+        string $lastName,
+        array  $roleImportIds,
+        string $studentFaculty,
+        string $schoolClass
     ): self
     {
         return new self(
@@ -42,7 +42,7 @@ readonly class MediStudentData implements UserData
             $email,
             $firstName,
             $lastName,
-            $roleIds,
+            $roleImportIds,
             [
                 AdditionalField::new(
                     MediDictonary::ADDITIONAL_FIELD_NAME_STUDENT_FACULTIES->value,

@@ -22,4 +22,16 @@ interface UserRepository
         Domain\ValueObjects\UserData $userData
     ): void;
 
+    /**
+     * @param string $userImportId
+     * @return string[]
+     */
+    public function getSubscribedRoleImportIds(
+        string $userImportId
+    ): array;
+
+    public function subscribeToRole(
+        string $userImportId, $roleImportId
+    ): void;
+
 }
