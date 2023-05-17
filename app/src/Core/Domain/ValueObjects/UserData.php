@@ -4,8 +4,8 @@ namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 
 /**
- * @property UserImportId $importId
- * @property UserId $userId
+ * @property string $importId
+ * @property int $userId
  * @property string $email
  * @property string $firstName
  * @property string $lastName

@@ -7,11 +7,11 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 interface UserRepository
 {
 
-    public function get(Domain\ValueObjects\UserImportId $userId): null|UserDto;
+    public function get(Domain\ValueObjects\MediUserImportId $userId): null|UserDto;
 
     public function getUserByImportId(
         string $importId
-    ): ?Domain\ValueObjects\MediStudentData;
+    ): ?Domain\ValueObjects\UserData;
 
     public function create(
         Domain\ValueObjects\UserData $userData

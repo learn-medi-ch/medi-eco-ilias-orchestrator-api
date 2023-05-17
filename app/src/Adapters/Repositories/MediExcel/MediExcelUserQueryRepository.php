@@ -36,7 +36,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
                 continue;
             }
 
-            $importId = ValueObjects\UserImportId::fromMediAddressNr($row[MediExcelUserColumnId::ID->value]);
+            $importId = ValueObjects\MediUserImportId::fromMediAddressNr($row[MediExcelUserColumnId::ID->value]);
 
             $email = $row[MediExcelUserColumnId::E_MAIL->value];
             $firstName = $row[MediExcelUserColumnId::FIRST_NAME->value];
@@ -91,7 +91,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     {
         if (strlen($studentFaculties) > 0) {
             foreach (explode(", ", $studentFaculties) as $facultyId) {
-                $roleImportIds[] = ValueObjects\RoleIdSuffix::FACULTY_STUDENTS->toRoleImportId($facultyId);
+                $roleImportIds[] = ValueObjects\MediGeneralRoleId::FACULTY_STUDENTS->toRoleImportIdString($facultyId);
             }
         }
         return $roleImportIds;
@@ -104,9 +104,9 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     {
         if (strlen($lecturerFaculties) > 0) {
             foreach (explode(", ", $lecturerFaculties) as $facultyId) {
-                $roleImportIds[] = ValueObjects\RoleIdSuffix::FACULTY_LECTURERS->toRoleImportId($facultyId);
+                $roleImportIds[] = ValueObjects\MediGeneralRoleId::FACULTY_LECTURERS->toRoleImportIdString($facultyId);
             }
-            $roleImportIds[] = ValueObjects\RoleIdSuffix::LECTURERS->toRoleImportId($facultyId);
+            $roleImportIds[] = ValueObjects\MediGeneralRoleId::LECTURERS->toRoleImportIdString($facultyId);
         }
         return $roleImportIds;
     }
@@ -118,9 +118,9 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     {
         if (strlen($adminFaculties) > 0) {
             foreach (explode(", ", $adminFaculties) as $facultyId) {
-                $roleImportIds[] = ValueObjects\RoleIdSuffix::FACULTY_ADMINS->toRoleImportId($facultyId);
+                $roleImportIds[] = ValueObjects\MediGeneralRoleId::FACULTY_ADMINS->toRoleImportIdString($facultyId);
             }
-            $roleImportIds[] = ValueObjects\RoleIdSuffix::ADMINS->toRoleImportId();
+            $roleImportIds[] = ValueObjects\MediGeneralRoleId::ADMINS->toRoleImportIdString();
         }
         return $roleImportIds;
     }
@@ -132,7 +132,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     ): array
     {
         if (strlen($lecturerFaculties) > 0 || strlen($expertFaculties) > 0) {
-            $roleImportIds[] = ValueObjects\RoleIdSuffix::MEDI_SANDBOX->toRoleImportId();
+            $roleImportIds[] = ValueObjects\MediGeneralRoleId::MEDI_SANDBOX->toRoleImportIdString();
         }
         return $roleImportIds;
     }
@@ -144,7 +144,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     ): array
     {
         if (strlen($lecturerFaculties) > 0 || strlen($expertFaculties) > 0) {
-            $roleImportIds[] = ValueObjects\RoleIdSuffix::MEDI_STAFF->toRoleImportId();
+            $roleImportIds[] = ValueObjects\MediGeneralRoleId::MEDI_STAFF->toRoleImportIdString();
         }
         return $roleImportIds;
     }
@@ -155,7 +155,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
     ): array
     {
         if (strlen($vocationalTrainerFaculties) > 0) {
-            $roleImportIds[] = ValueObjects\RoleIdSuffix::FACULTY_VOCATIONAL_TRAINERS->toRoleImportId($vocationalTrainerFaculties);
+            $roleImportIds[] = ValueObjects\MediGeneralRoleId::FACULTY_VOCATIONAL_TRAINERS->toRoleImportIdString($vocationalTrainerFaculties);
         }
         return $roleImportIds;
     }

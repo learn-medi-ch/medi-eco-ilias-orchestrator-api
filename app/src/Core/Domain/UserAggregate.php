@@ -11,7 +11,7 @@ class UserAggregate
     public array $additionalFields = [];
 
     private function __construct(
-        private ValueObjects\UserImportId $userId
+        private ValueObjects\MediUserImportId $userId
     ) {
 
     }
@@ -20,7 +20,7 @@ class UserAggregate
      * @return static
      */
     public static function new(
-        ValueObjects\UserImportId $userId
+        ValueObjects\MediUserImportId $userId
     ) : self {
         return new self($userId);
     }
@@ -60,7 +60,7 @@ class UserAggregate
      * @return void
      */
     public function removeRole(
-        ValueObjects\Role $mediRole
+        ValueObjects\MediRole $mediRole
     ) : void {
         $this->recordMessage(Messages\RoleRemoved::new($this->userId, $mediRole));
     }
@@ -69,7 +69,7 @@ class UserAggregate
      * @return void
      */
     public function appendRole(
-        ValueObjects\Role $mediRole
+        ValueObjects\MediRole $mediRole
     ) : void {
         $this->recordMessage(Messages\RoleAppended::new($this->userId, $mediRole));
     }

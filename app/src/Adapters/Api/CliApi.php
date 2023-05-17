@@ -1,6 +1,7 @@
 <?php
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
+use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
@@ -18,16 +19,22 @@ class CliApi
     public static function new() : self
     {
         $config = Config::new();
+        $iliasRestApiClient = IliasRestApiClient::new();
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
-                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new(
-                        $config->excelImportDirectoryPath
-                    ),
+                    Adapters\Repositories\IliasRole\IliasRoleRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath),
                     Adapters\Dispatchers\HttpMessageDispatcher::new($config)
                 )
-            )
+            ),
         );
+    }
+
+    public function install(): void {
+        $this->service->createMediGeneralRoles();
+        $this->service->createMediFacultiesRoles();
     }
 
     public function importUsers(Ports\Messages\ImportUsers $importUsers) : void

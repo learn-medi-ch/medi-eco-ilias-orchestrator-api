@@ -23,6 +23,39 @@ class Service
         return new self($outbounds);
     }
 
+    public function createMediGeneralRoles(): void {
+        $roleRepository = $this->outbounds->roleRepository;
+
+        foreach(Domain\ValueObjects\MediGeneralRoleId::cases() as $roleIdSuffix) {
+            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toRoleImportIdString());
+            match ($role) {
+                null => $roleRepository->createGlobalRole($roleIdSuffix->toRoleImportIdString(), $roleIdSuffix->toRoleTitle()),
+                default => []
+            };
+        }
+    }
+
+    public function createMediFacultiesRoles(): void {
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::AMB->value);
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::BMA->value);
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::DH->value);
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::MTR->value);
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::OT->value);
+        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::RS->value);
+    }
+
+    private function createMediFacultyRoles(string $facultyId): void {
+        $roleRepository = $this->outbounds->roleRepository;
+        foreach(Domain\ValueObjects\MediFacultyRoleId::cases() as $roleIdSuffix) {
+            $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toRoleImportIdString($facultyId));
+            match ($role) {
+                null => $roleRepository->createGlobalRole($roleIdSuffix->toRoleImportIdString($facultyId), $roleIdSuffix->toRoleTitle($facultyId)),
+                default => []
+            };
+        }
+    }
+
+
     public function subscribeStudents(Messages\SubscribeStudents $message, callable $publish): void
     {
         /*
@@ -179,7 +212,7 @@ class Service
         $iliasUserRepository->update($userData);
     }
 
-    private function subscribeToRoles(string $importId, MediStudentData $userData) {
+    private function subscribeToRoles(Domain\ValueObjects\UserData $userData) {
 
     }
 
@@ -191,14 +224,14 @@ class Service
         if ($message->newAdditionalFieldValue === "" || $message->newAdditionalFieldValue === null) {
             $oldFacultyIds = array_map('trim', explode(',', $message->oldAdditionalFieldValue));
             foreach ($oldFacultyIds as $facultyId) {
-                $aggregate->removeRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                $aggregate->removeRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\FacultyId::from($facultyId),
                     $message->roleId));
             }
         } else {
             $oldFacultyIds = array_map('trim', explode(',', $message->oldAdditionalFieldValue));
             $newFacultyIds = array_map('trim', explode(',', $message->newAdditionalFieldValue));
             foreach ($newFacultyIds as $facultyId) {
-                $aggregate->appendRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                $aggregate->appendRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\FacultyId::from($facultyId),
                     $message->roleId));
             }
             foreach ($oldFacultyIds as $facultyId) {
@@ -206,7 +239,7 @@ class Service
                     continue;
                 }
                 if (in_array($facultyId, $newFacultyIds) === false) {
-                    $aggregate->removeRole(Domain\ValueObjects\Role::new(Domain\ValueObjects\FacultyId::from($facultyId),
+                    $aggregate->removeRole(Domain\ValueObjects\MediRole::new(Domain\ValueObjects\FacultyId::from($facultyId),
                         $message->roleId));
                 }
             }

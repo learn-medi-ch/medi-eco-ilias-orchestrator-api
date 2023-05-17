@@ -2,7 +2,7 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-readonly class UserImportId implements UserId
+readonly class MediUserImportId implements Id
 {
     public string $idType;
 
@@ -31,7 +31,7 @@ readonly class UserImportId implements UserId
         );
     }
 
-    public function isEqual(UserImportId $obj): bool
+    public function isEqual(MediUserImportId $obj): bool
     {
         return (serialize($this) === serialize($obj));
     }

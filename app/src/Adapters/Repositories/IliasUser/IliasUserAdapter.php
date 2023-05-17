@@ -3,7 +3,7 @@
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Repositories\IliasUser;
 
 use FluxIliasBaseApi\Adapter\User\UserDiffDto;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\{MediStudentData, UserData, UserImportId};
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\{MediStudentData, UserData, MediUserImportId};
 use stdClass;
 
 class IliasUserAdapter

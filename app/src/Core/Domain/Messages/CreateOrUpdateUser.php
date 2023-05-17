@@ -6,17 +6,17 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 class CreateOrUpdateUser implements OutgoingMessage
 {
     private function __construct(
-        public ValueObjects\UserImportId    $userId,
-        public ValueObjects\MediStudentData $userData,
-        public array                        $additionalFields
+        public ValueObjects\MediUserImportId $userId,
+        public ValueObjects\MediStudentData  $userData,
+        public array                         $additionalFields
     ) {
 
     }
 
     public static function new(
-        ValueObjects\UserImportId    $userId,
-        ValueObjects\MediStudentData $userData,
-        array                        $additionalFields
+        ValueObjects\MediUserImportId $userId,
+        ValueObjects\MediStudentData  $userData,
+        array                         $additionalFields
     ): self  {
         return new self(
             ...get_defined_vars()

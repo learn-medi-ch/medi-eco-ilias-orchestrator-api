@@ -10,12 +10,12 @@ readonly class MediExternalUserData implements UserData
 
 
     private function __construct(
-        public UserImportId $importId,
-        public string       $email,
-        public string       $firstName,
-        public string       $lastName,
-        public array        $roleIds,
-        public array        $additionalFields
+        public MediUserImportId $importId,
+        public string           $email,
+        public string           $firstName,
+        public string           $lastName,
+        public array            $roleIds,
+        public array            $additionalFields
     )
     {
         $this->login = $email;
@@ -27,12 +27,12 @@ readonly class MediExternalUserData implements UserData
      * @return static
      */
     public static function new(
-        UserImportId $importId,
-        string       $email,
-        string       $firstName,
-        string       $lastName,
-        array        $roleIds,
-        string       $vocationalTrainerFaculties
+        MediUserImportId $importId,
+        string           $email,
+        string           $firstName,
+        string           $lastName,
+        array            $roleIds,
+        string           $vocationalTrainerFaculties
     ): self
     {
         return new self(

@@ -1,19 +1,14 @@
 <?php
+
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-class Role
+
+/**
+ * @property string $importId
+ * @property int $roleId
+ * @property string $title
+ */
+interface Role
 {
-    private function __construct(
-        public FacultyId $facultyId,
-        public RoleIdSuffix $roleId
-    ) {
 
-    }
-
-    public static function new(
-        FacultyId $facultyId,
-        RoleIdSuffix $roleId
-    ) : self {
-        return new self($facultyId, $roleId);
-    }
 }

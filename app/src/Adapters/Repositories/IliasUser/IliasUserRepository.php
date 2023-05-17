@@ -194,7 +194,7 @@ class IliasUserRepository implements Ports\User\UserRepository
         );
     }
     */
-    public function get(Core\Domain\ValueObjects\UserImportId $userId): null|UserDto
+    public function get(Core\Domain\ValueObjects\MediUserImportId $userId): null|UserDto
     {
         // TODO: Implement get() method.
     }
@@ -206,7 +206,7 @@ class IliasUserRepository implements Ports\User\UserRepository
         return match ($userDto) {
             null => null,
             default => Domain\ValueObjects\MediStudentData::new(
-                Domain\ValueObjects\UserImportId::new($userDto->import_id),
+                Domain\ValueObjects\MediUserImportId::new($userDto->import_id),
                 $userDto->email,
                 $userDto->first_name,
                 $userDto->last_name,

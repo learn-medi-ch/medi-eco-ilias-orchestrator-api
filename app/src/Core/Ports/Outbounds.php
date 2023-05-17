@@ -4,11 +4,13 @@ namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
 use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 
-class Outbounds {
+class Outbounds
+{
 
     private function __construct(
-        public readonly User\UserRepository $iliasUserRepository,
-        public readonly User\UserQueryRepository $userQueryRepository,
+        public readonly Role\RoleRepository        $roleRepository,
+        public readonly User\UserRepository        $iliasUserRepository,
+        public readonly User\UserQueryRepository   $userQueryRepository,
         public readonly User\UserMessageDispatcher $userMessageDispatcher
     )
     {
@@ -16,10 +18,12 @@ class Outbounds {
     }
 
     public static function new(
-        User\UserRepository $iliasUserRepository,
-        User\UserQueryRepository $userQueryRepository,
+        Role\RoleRepository        $roleRepository,
+        User\UserRepository        $iliasUserRepository,
+        User\UserQueryRepository   $userQueryRepository,
         User\UserMessageDispatcher $userMessageDispatcher
-    ) {
+    )
+    {
         return new self(...get_defined_vars());
     }
 }
