@@ -16,7 +16,7 @@ enum MediFacultyRoleId: string
         return "role_" . $facultyId . "-" . $this->value;
     }
 
-    public function toRoleTitle(?string $facultyId): string
+    public function toTitle(?string $facultyId): string //todo think about secondParameter label
     {
         return match ($this) {
             MediFacultyRoleId::FACULTY_STUDENTS => "BG_" . strtoupper($facultyId) . "_Studierende",

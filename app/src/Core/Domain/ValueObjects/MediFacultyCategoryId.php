@@ -15,7 +15,7 @@ enum MediFacultyCategoryId: string
         return  "cat_" . $facultyId . "-" . $this->value;
     }
 
-    public function toRoleTitle(?string $facultyId): string
+    public function toTitle(?string $facultyId): string
     {
         return match ($this) {
             MediFacultyCategoryId::FACULTY_ROOT => strtoupper($facultyId),

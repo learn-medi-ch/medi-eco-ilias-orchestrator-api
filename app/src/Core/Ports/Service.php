@@ -2,11 +2,7 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
-use FluxIliasRestApiClient\Libs\FluxIliasBaseApi\Adapter\CourseMember\CourseMemberDiffDto;
-use FluxIliasRestApiClient\Libs\FluxIliasBaseApi\Adapter\Object\DefaultObjectType;
-use  MediEco\IliasUserOrchestratorOrbital\Core\Domain;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\MediStudentData;
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports\User\UserDto;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 class Service
 {
@@ -23,10 +19,66 @@ class Service
         return new self($outbounds);
     }
 
-    public function createMediGeneralRoles(): void {
+    public function createMediGeneralCategories(): void
+    {
+        $repository = $this->outbounds->categoryRepository;
+        foreach (ValueObjects\MediGeneralCategoryId::cases() as $categoryId) {
+            $category = $repository->getCategoryByImportId($categoryId->toImportId());
+            match ($category) {
+                null => $repository->createCategoryToRootNode($categoryId->toImportId(), $categoryId->toTitle()),
+                default => []
+            };
+        }
+    }
+
+    public function createMediFacultiesCategories(): void
+    {
+        foreach (ValueObjects\FacultyId::cases() as $facultyId) {
+            $this->createMediFacultyCategories($facultyId->value);
+        }
+    }
+
+    private function createMediFacultyCategories(string $facultyId): void
+    {
+        $this->createCategory(
+            ValueObjects\MediGeneralCategoryId::FACULTIES->toImportId(),
+            ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId),
+            ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toTitle($facultyId)
+        );
+
+        $facultyRootImportId = ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId);
+        $this->createCategory(
+            $facultyRootImportId,
+            ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toImportId($facultyId),
+            ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toTitle($facultyId),
+        );
+        $this->createCategory(
+            $facultyRootImportId,
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toTitle($facultyId),
+        );
+        $this->createCategory(
+            $facultyRootImportId,
+            ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toImportId($facultyId),
+            ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toTitle($facultyId),
+        );
+    }
+
+    private function createCategory(string $parentImportId, string $importId, string $title)
+    {
+        $repository = $this->outbounds->categoryRepository;
+        $category = $repository->getCategoryByImportId($importId);
+        match ($category) {
+            null => $repository->createCategory($parentImportId, $importId, $title),
+            default => []
+        };
+    }
+
+    public function createMediGeneralRoles(): void
+    {
         $roleRepository = $this->outbounds->roleRepository;
 
-        foreach(Domain\ValueObjects\MediGeneralRoleId::cases() as $roleIdSuffix) {
+        foreach (ValueObjects\MediGeneralRoleId::cases() as $roleIdSuffix) {
             $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toImportId());
             match ($role) {
                 null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId(), $roleIdSuffix->toRoleTitle()),
@@ -35,21 +87,20 @@ class Service
         }
     }
 
-    public function createMediFacultiesRoles(): void {
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::AMB->value);
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::BMA->value);
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::DH->value);
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::MTR->value);
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::OT->value);
-        $this->createMediFacultyRoles(Domain\ValueObjects\FacultyId::RS->value);
+    public function createMediFacultiesRoles(): void
+    {
+        foreach (ValueObjects\FacultyId::cases() as $facultyId) {
+            $this->createMediFacultyRoles($facultyId->value);
+        }
     }
 
-    private function createMediFacultyRoles(string $facultyId): void {
+    private function createMediFacultyRoles(string $facultyId): void
+    {
         $roleRepository = $this->outbounds->roleRepository;
-        foreach(Domain\ValueObjects\MediFacultyRoleId::cases() as $roleIdSuffix) {
+        foreach (ValueObjects\MediFacultyRoleId::cases() as $roleIdSuffix) {
             $role = $roleRepository->getRoleByRoleByImportId($roleIdSuffix->toImportId($facultyId));
             match ($role) {
-                null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId($facultyId), $roleIdSuffix->toRoleTitle($facultyId)),
+                null => $roleRepository->createGlobalRole($roleIdSuffix->toImportId($facultyId), $roleIdSuffix->toTitle($facultyId)),
                 default => []
             };
         }
@@ -145,9 +196,9 @@ class Service
 
         $recordedMessages = [];
         foreach ($usersToHandle as $user) {
-            echo "*********".PHP_EOL;
-            echo $user->importId->id.PHP_EOL;
-            echo "*********".PHP_EOL;
+            echo "*********" . PHP_EOL;
+            echo $user->importId->id . PHP_EOL;
+            echo "*********" . PHP_EOL;
             $iliasUser = $iliasUserRepository->getUserByImportId(
                 $user->importId->id
             );
@@ -200,23 +251,24 @@ class Service
         $publish("Ok: " . $message->getName()->toUrlParameter());
     }
 
-    private function createUser(Domain\ValueObjects\UserData $userData): void
+    private function createUser(ValueObjects\UserData $userData): void
     {
         $iliasUserRepository = $this->outbounds->iliasUserRepository;
         $iliasUserRepository->create($userData);
     }
 
-    private function updateUser(Domain\ValueObjects\UserData $userData): void
+    private function updateUser(ValueObjects\UserData $userData): void
     {
         $iliasUserRepository = $this->outbounds->iliasUserRepository;
         $iliasUserRepository->update($userData);
     }
 
-    private function subscribeToRoles(Domain\ValueObjects\UserData $userData) {
+    private function subscribeToRoles(ValueObjects\UserData $userData)
+    {
 
     }
 
-    public function handleSubscriptions(
+    /*public function handleSubscriptions(
         Messages\HandleSubscriptions $message
     )
     {
@@ -245,14 +297,14 @@ class Service
             }
         }
         $this->dispatchMessages($aggregate->getAndResetRecordedMessages());
-    }
+    }*/
 
-    private function dispatchMessages(array $recordedMessages)
+    /*private function dispatchMessages(array $recordedMessages)
     {
         if (count($recordedMessages) > 0) {
             foreach ($recordedMessages as $message) {
                 $this->outbounds->userMessageDispatcher->dispatch($message);
             }
         }
-    }
+    }*/
 }

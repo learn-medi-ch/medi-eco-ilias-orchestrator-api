@@ -45,4 +45,9 @@ final readonly class IliasRoleRepository implements Ports\Role\RoleRepository
             ""
         ));
     }
+
+    public function createLocalRole(string $importId, string $title, int $refId)
+    {
+        // TODO: Implement createLocalRole() method.
+    }
 }
