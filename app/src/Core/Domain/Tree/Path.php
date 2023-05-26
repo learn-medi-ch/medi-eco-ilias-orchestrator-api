@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
 final readonly class Path
 {

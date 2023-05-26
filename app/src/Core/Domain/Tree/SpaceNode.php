@@ -1,9 +1,9 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\Space;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\UserGroup;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\Space;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\UserGroup;
 
 final readonly class SpaceNode
 {
@@ -11,9 +11,10 @@ final readonly class SpaceNode
     private function __construct(
         public string $uniqueName,
         public string $label,
-        public array  $roomNodes,
-        public array  $roleNodes,
-        public array  $userGroupNodes
+        public ?array $spaces,
+        public ?array $rooms,
+        public ?array $roles,
+        public ?array $userGroups
     )
     {
 
@@ -22,11 +23,11 @@ final readonly class SpaceNode
     /**
      * @param string $uniqueName
      * @param string $label
-     * @param Space[]|null $spaces
+     * @param array|null $spaces
      * @param array|null $rooms
      * @param array|null $userGroups
      * @param array|null $roles
-     * @return static
+     * @return static  //todo
      */
     public static function new(
         string $uniqueName,

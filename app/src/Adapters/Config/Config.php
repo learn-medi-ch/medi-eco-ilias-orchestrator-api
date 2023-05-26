@@ -2,29 +2,27 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label\Language;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\SpaceNode;
-use MediEco\IliasUserOrchestratorOrbital\Adapters\NodeTypes\{Space, Room, UserGroup};
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label\LabelDictionary;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\Path;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\Tree;
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Label, Label\Dictionary, Tree};
+use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters\{Space, Room, Role, UserGroup};
 
-final readonly class Config
+final readonly class Config implements Ports\Config
 {
-    public LabelDictionary $dictionary;
-    public SpaceNode $tree;
+    // TODO: Implement getDictionary() method.
+    public Label\Dictionary $dictionary;
+    public Tree\SpaceNode $tree;
 
     private function __construct(
-        public string $name,
-        public string $excelImportDirectoryPath,
-    )
-    {
-        $this->dictionary = LabelDictionary::new();
-        $this->fillDictionary();
+    public string $name,
+    public string $excelImportDirectoryPath,
+)
+{
+    $this->dictionary = Label\Dictionary::new();
+    $this->fillDictionary();
 
 
-        $this->tree = $this->createTree($this->dictionary);
-    }
+    $this->tree = $this->createTree($this->dictionary);
+}
 
     public static function new(): self //todo instance
     {
@@ -36,39 +34,36 @@ final readonly class Config
         );
     }
 
-    private function fillDictionary(): LabelDictionary
-    {
-        $appendLabel = fn(string $uniqueName, string $en, string $de) => $this->appendLabelToDictionary($uniqueName, $en, $de);
-        $uniqueName = fn(array $nodeTypes) => $this->createUniqueName($nodeTypes);
+    private function fillDictionary(): Label\Dictionary
+{
+    $appendLabel = fn(string $uniqueName, string $en, string $de) => $this->appendLabelToDictionary($uniqueName, $en, $de);
+    $uniqueName = fn(array $nodeTypes) => $this->createUniqueName($nodeTypes);
 
-        $appendLabel($uniqueName([Space::UNITS]), "Units", "Bildungsgänge");
-        $appendLabel($uniqueName([Space::UNITS, Space::MEDI_AT]), "AT", "AT");
-        $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA]), "BMA", "BMA");
-
-
-        $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA, Room::GENERAL_INFORMATIONS]), "BMA General", "BMA Allgemein");
-    }
+    $appendLabel($uniqueName([Space::UNITS]), "Units", "Bildungsgänge");
+    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_AT]), "AT", "AT");
+    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA]), "BMA", "BMA");
+    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA, Room::GENERAL_INFORMATIONS]), "BMA General", "BMA Allgemein");
+}
 
 
     private function createUniqueName(array $nodeTypes): string
-    {
-        $nodeTypes = array_map(
-            fn($nodeType) => $nodeType->value,
-            $nodeTypes
-        );
-        return Path::new($nodeTypes)->toKebabCase();
-    }
+{
+    $nodeTypes = array_map(
+        fn($nodeType) => $nodeType->value,
+        $nodeTypes
+    );
+    return Tree\Path::new($nodeTypes)->toKebabCase();
+}
 
     private function appendLabelToDictionary(string $uniqueName, string $en, string $de): void
-    {
-        $this->dictionary
-            ->append(Language::EN, $uniqueName, $en)
-            ->append(Language::DE, $uniqueName, $de);
-    }
+{
+    $this->dictionary
+        ->append(Label\Language::EN, $uniqueName, $en)
+        ->append(Label\Language::DE, $uniqueName, $de);
+}
 
-    private function createTree(LabelDictionary $dictionary): SpaceNode
+    public function dictionary(): Dictionary
     {
-        return Tree::new($dictionary, Space::UNITS)->rootNode;
+        return $this->dictionary;
     }
-
 }

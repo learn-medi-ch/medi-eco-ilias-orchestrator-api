@@ -1,13 +1,19 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Repositories\IliasRole;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
 use FluxIliasBaseApi\Adapter\Role\RoleDiffDto;
 use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use MediEco\IliasUserOrchestratorOrbital\Core;
-use MediEco\IliasUserOrchestratorOrbital\Core\{Ports, Domain, Ports\User\UserDto};
+use MediEco\IliasUserOrchestratorOrbital\Core\{Domain\Tree\RoleNode,
+    Domain\Tree\RoomNode,
+    Domain\Tree\SpaceNode,
+    Domain\Tree\UserGroup,
+    Ports\TreePorts,
+    Domain,
+    Ports\User\UserDto};
 
-final readonly class IliasRoleRepository implements Ports\Role\RoleRepository
+final readonly class SpaceRepository implements TreePorts\Repository
 {
     private function __construct(
         private IliasRestApiClient $iliasRestApiClient,
@@ -53,5 +59,15 @@ final readonly class IliasRoleRepository implements Ports\Role\RoleRepository
             $title,
             ""
         ));
+    }
+
+    public function getByParentUniqueName(string $parentUniqueName): null|RoleNode|RoomNode|SpaceNode|UserGroup
+    {
+        // TODO: Implement getByParentUniqueName() method.
+    }
+
+    public function create(string $parentUniqueName, string $uniqueName, string $label): void
+    {
+        // TODO: Implement create() method.
     }
 }

@@ -1,8 +1,7 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\Room;
 
 final readonly class RoomNode
 {

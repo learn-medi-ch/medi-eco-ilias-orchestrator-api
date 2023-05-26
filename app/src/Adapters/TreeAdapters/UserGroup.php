@@ -1,10 +1,10 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\NodeTypes;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
 
-enum UserGroup: string implements Domain\NodeTypes\UserGroup
+enum UserGroup: string implements TreePorts\UserGroup
 {
     case ADMINS = "admins";
     case EXPERTS = "experts";

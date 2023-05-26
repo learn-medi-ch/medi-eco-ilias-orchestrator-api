@@ -2,31 +2,27 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\SpaceNode;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Label, Tree};
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
 
 final readonly class Outbounds
 {
 
     private function __construct(
-        public Course\CourseRepository     $courseRepository,
-        public Category\CategoryRepository $categoryRepository,
-        public Role\RoleRepository         $roleRepository,
-        public User\UserRepository         $iliasUserRepository,
-        public User\UserQueryRepository    $userQueryRepository
+        public Label\Dictionary  $dictionary,
+        public Tree\Repositories $repositories,
     )
     {
 
     }
 
     public static function new(
-        SpaceNode                   $baseStructure,
-        Course\CourseRepository     $courseRepository,
-        Category\CategoryRepository $categoryRepository,
-        Role\RoleRepository         $roleRepository,
-        User\UserRepository         $iliasUserRepository,
-        User\UserQueryRepository    $userQueryRepository
+        Config               $config,
+        TreePorts\Repository $spaceRepository,
+        TreePorts\Repository $roomRepository,
+        TreePorts\Repository $roleRepository
     )
     {
-        return new self(...get_defined_vars());
+        return new self($config->dictionary(), Tree\Repositories::new($spaceRepository, $roomRepository, $roleRepository));
     }
 }

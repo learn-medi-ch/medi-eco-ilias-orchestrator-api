@@ -25,9 +25,9 @@ class CliApi
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
-                    Adapters\Repositories\IliasCourse\IliasCourseRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasCategory\IliasCategoryRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasRole\IliasRoleRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\IliasCourse\RoomRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\IliasCategory\RoleRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\IliasRole\SpaceRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
                     Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath)
                 )

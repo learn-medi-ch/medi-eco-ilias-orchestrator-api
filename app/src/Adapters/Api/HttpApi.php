@@ -7,14 +7,14 @@ use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use Swoole\Http;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 class HttpApi
 {
     private function __construct(
-        private Ports\Service      $service,
-        private IliasRestApiClient $iliasRestApiClient,
+        private Ports\Service $service
     )
     {
 
@@ -24,20 +24,17 @@ class HttpApi
     {
         $config = Config::new();
 
-        $iliasRestApiClient = IliasRestApiClient::new();
+        $iliasRestApiClient = IliasRestApiClient::new(); //todo
 
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
-                    $config->tree,
-                    Adapters\Repositories\IliasCourse\IliasCourseRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasCategory\IliasCategoryRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasRole\IliasRoleRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath),
+                    $config,
+                    TreeAdapters\SpaceRepository::new($iliasRestApiClient),
+                    TreeAdapters\RoomRepository::new($iliasRestApiClient),
+                    TreeAdapters\RoleRepository::new($iliasRestApiClient),
                 )
-            ),
-            IliasRestApiClient::new()
+            )
         );
     }
 

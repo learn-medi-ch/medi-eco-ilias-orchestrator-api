@@ -2,49 +2,88 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
+use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Tree, Label, Tree\SpaceNode};
 use  MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 //todo split up in userService, CategoryService, RoleService....
-class Service
+final readonly class Service
 {
 
     private function __construct(
-        private Outbounds $outbounds
+        private Label\Dictionary  $dictionary,
+        private Tree\Repositories $repositories
     )
     {
 
     }
 
-    public static function new(Outbounds $outbounds)
+    public static function new(Outbounds $outbounds): Service
     {
-        return new self($outbounds);
+        return new self($outbounds->dictionary, $outbounds->repositories);
     }
 
-    public function createMediGeneralCategories(): void
+    /**
+     * @param string $uniqueNameParent
+     * @param TreePorts\Space $rootSpace
+     * @return void
+     */
+    public function createTreeNodes(
+        string          $uniqueNameParent,
+        TreePorts\Space $rootSpace
+    ): void
     {
-        $repository = $this->outbounds->categoryRepository;
-        foreach (ValueObjects\MediGeneralCategoryId::cases() as $categoryId) {
-            $category = $repository->getCategoryByImportId($categoryId->toImportId());
-            match ($category) {
-                null => $repository->createCategoryToRootNode($categoryId->toImportId(), $categoryId->toTitle()),
-                default => []
-            };
-        }
+        $rootNode = Tree\TreeAggregate::new($this->dictionary)->create($uniqueNameParent, $rootSpace);
+
+        $this->repositories->spaceRepository->create($uniqueNameParent, $rootNode->uniqueName, $rootNode->label);
+        $this->createSpaces($rootNode->uniqueName, $rootNode->spaces);
     }
 
-    public function createMediFacultiesCategories(): void
+
+    /**
+     * @param string $parentUniqueName
+     * @param Tree\SpaceNode[]|null $spaces
+     * @return void
+     */
+    public function createSpaces(string $parentUniqueName, ?array $spaces): void
     {
-        foreach (ValueObjects\FacultyId::cases() as $facultyId) {
-            $this->createMediFacultyCategories($facultyId->value);
+        if ($spaces === null) {
+            return;
         }
+
+        array_map(fn($space) => $this->repositories->spaceRepository->create($parentUniqueName, $space->uniqueName, $space->label), $spaces);
+        array_map(fn($space) => $this->createSpaces($space->uniqueName, $space->spaces), $spaces);
+        array_map(fn($space) => $this->createRooms($space->uniqueName, $space->rooms), $spaces);
+        array_map(fn($space) => $this->createRoles($space->uniqueName, $space->roles), $spaces);
     }
 
-    public function createMediFacultiesCourses(): void
+    /**
+     * @param string $parentSpaceUniqueName
+     * @param Tree\RoomNode[]|null $rooms
+     * @return void
+     */
+    public function createRooms(string $parentSpaceUniqueName, ?array $rooms): void
     {
-        foreach (ValueObjects\FacultyId::cases() as $facultyId) {
-            $this->createMediFacultyCoursesForPersonGroups($facultyId->value);
+        if ($rooms === null) {
+            return;
         }
+        array_map(fn($room) => $this->repositories->roomRepository->create($parentSpaceUniqueName, $room->uniqueName, $room->label), $rooms);
     }
+
+    /**
+     * @param string $parentSpaceUniqueName
+     * @param Tree\RoleNode[]|null $roles
+     * @return void
+     */
+    public function createRoles(string $parentSpaceUniqueName, ?array $roles): void
+    {
+        if ($roles === null) {
+            return;
+        }
+        array_map(fn($role) => $this->repositories->roleRepository->create($parentSpaceUniqueName, $role->uniqueName, $role->label), $roles);
+    }
+
+/*
 
     private function createMediFacultyCoursesForPersonGroups(string $facultyId): void
     {
@@ -103,7 +142,7 @@ class Service
     private function createMediFacultyCategories(string $facultyId): void
     {
         //root node of faculty tree
-        $this->createCategory(
+        $this->createSpaces(
             ValueObjects\MediGeneralCategoryId::FACULTIES->toImportId(),
             ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toTitle($facultyId)
@@ -111,19 +150,19 @@ class Service
 
         $facultyRootImportId = ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId);
         //node for curriculums
-        $this->createCategory(
+        $this->createSpaces(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toTitle($facultyId),
         );
         //node for groups
-        $this->createCategory(
+        $this->createSpaces(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toTitle($facultyId),
         );
         //node for school classes
-        $this->createCategory(
+        $this->createSpaces(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toTitle($facultyId),
@@ -171,6 +210,7 @@ class Service
             };
         }
     }
+*/
 
 
     public function subscribeStudents(Messages\SubscribeStudents $message, callable $publish): void

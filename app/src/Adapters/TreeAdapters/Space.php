@@ -1,10 +1,10 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\NodeTypes;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
 
-enum Space: string implements Domain\NodeTypes\Space
+enum Space: string implements TreePorts\Space
 {
 
     case UNITS = "units";

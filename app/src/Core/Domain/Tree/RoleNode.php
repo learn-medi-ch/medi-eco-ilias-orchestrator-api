@@ -1,10 +1,10 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\Role;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\Room;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\UserGroup;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\Role;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\Room;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\UserGroup;
 
 final readonly class RoleNode
 {

@@ -1,10 +1,8 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes\UserGroup;
-
-final readonly class UserGroupNode
+final readonly class UserGroup
 {
     private function __construct(
         public string $uniqueName,

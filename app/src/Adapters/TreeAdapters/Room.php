@@ -1,10 +1,10 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\NodeTypes;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
 
-enum Room: string implements Domain\NodeTypes\Room
+enum Room: string implements TreePorts\Room
 {
     case USER_GROUP_COLLABORATION = "user_group_collaboration";
     case GENERAL_INFORMATIONS = "general_informations";

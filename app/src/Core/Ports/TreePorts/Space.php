@@ -1,11 +1,12 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\NodeTypes;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
 
 
 interface Space
 {
-    public function name(): string;
+    public function parentUnqieName(): string;
+    public function uniqueName(): string;
     /**
      * @return ?Space[]
      */

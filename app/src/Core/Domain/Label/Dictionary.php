@@ -4,7 +4,7 @@ namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label;
 
 
 
-final class LabelDictionary
+final class Dictionary
 {
     private array $labels = [];
 
