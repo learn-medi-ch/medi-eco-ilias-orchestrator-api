@@ -6,7 +6,7 @@ use FluxIliasBaseApi\Adapter\User\UserDiffDto;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\{MediStudentData, UserData, MediUserImportId};
 use stdClass;
 
-class IliasUserAdapter
+class User
 {
 
     private function __construct(

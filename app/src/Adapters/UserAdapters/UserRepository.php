@@ -6,7 +6,7 @@ use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use MediEco\IliasUserOrchestratorOrbital\Core;
 use MediEco\IliasUserOrchestratorOrbital\Core\{Ports, Domain, Ports\User\UserDto};
 
-class IliasUserRepository implements Ports\User\UserRepository
+class UserRepository implements Ports\User\UserRepository
 {
 
     private function __construct(
@@ -43,7 +43,7 @@ class IliasUserRepository implements Ports\User\UserRepository
     ): void
     {
         $this->iliasRestApiClient->createUser(
-            IliasUserAdapter::fromDomain($userData)->toUserDiffDto()
+            User::fromDomain($userData)->toUserDiffDto()
         );
     }
 
@@ -53,7 +53,7 @@ class IliasUserRepository implements Ports\User\UserRepository
     {
         $this->iliasRestApiClient->updateUserByImportId(
             $userData->importId,
-            IliasUserAdapter::fromDomain($userData)->toUserDiffDto()
+            User::fromDomain($userData)->toUserDiffDto()
         );
     }
 

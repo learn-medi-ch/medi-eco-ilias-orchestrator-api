@@ -6,7 +6,7 @@ use FluxIliasRestApiClient\Libs\FluxIliasBaseApi\Adapter\User\UserDiffDto;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 use stdClass;
 
-class IliasUserDefinedFieldAdapter
+class AddtionalUserFields
 {
 
     private function __construct(
@@ -18,7 +18,7 @@ class IliasUserDefinedFieldAdapter
 
     /**
      * @param ValueObjects\AdditionalField[] $additionalFields
-     * @return IliasUserDefinedFieldAdapter
+     * @return AddtionalUserFields
      */
     public static function fromDomain(
         array $additionalFields,

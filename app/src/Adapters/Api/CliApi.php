@@ -28,7 +28,7 @@ class CliApi
                     Adapters\Repositories\IliasCourse\RoomRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasCategory\RoleRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasRole\SpaceRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
+                    Adapters\Repositories\IliasUser\UserRepository::new($iliasRestApiClient),
                     Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath)
                 )
             ),
