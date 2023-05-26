@@ -8,14 +8,14 @@ class SubscribeStudents implements IncomingMessage
 {
     private function __construct(
         public Domain\ValueObjects\FacultyId $facultyId,
-        public string $schoolYear,
+        public string                        $schoolYear,
     ) {
 
     }
 
     public static function new(
         Domain\ValueObjects\FacultyId $facultyId,
-        string $schoolYear,
+        string                        $schoolYear,
     ) : self {
         return new self(...get_defined_vars());
     }

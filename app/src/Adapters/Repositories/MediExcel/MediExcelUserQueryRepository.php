@@ -50,8 +50,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
             $adminFaculties = $row[MediExcelUserColumnId::BG_ADMIN->value];
 
             $vocationalTrainerFaculties = $row[MediExcelUserColumnId::BG_BERUFSBILDENDE->value];
-
-            $roleImportIds = $this->getRoleImportIds($studentFaculties, $lecturerFaculties, $expertFaculties, $adminFaculties, $vocationalTrainerFaculties);
+            $roleImportIds = $this->appendRoleImportIdsToArray([], $studentFaculties, $lecturerFaculties, $expertFaculties, $adminFaculties, $vocationalTrainerFaculties);
 
             $users[] = match (true) {
                 str_contains($email, 'medibern.ch') => ValueObjects\MediStudentData::new($importId, $email, $firstName, $lastName, $roleImportIds, $studentFaculties, $studentSchoolClass),
@@ -66,7 +65,8 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $users;
     }
 
-    private function getRoleImportIds(
+    private function appendRoleImportIdsToArray(
+        array  $roleImportIds,
         string $studentFaculties,
         string $lecturerFaculties,
         string $expertFaculties,
@@ -74,17 +74,20 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         string $vocationalTrainerFaculties
     ): array
     {
-        $roleImportIds = [];
-        $roleImportIds = $this->appendRoleIdsStudent($roleImportIds, $studentFaculties);
-        $roleImportIds = $this->appendRoleIdsLecturer($roleImportIds, $lecturerFaculties);
-        $roleImportIds = $this->appendRoleIdAdmin($roleImportIds, $adminFaculties);
-        $roleImportIds = $this->appendRoleIdMediStaff($roleImportIds, $lecturerFaculties, $expertFaculties);
-        $roleImportIds = $this->appendRoleIdSandbox($roleImportIds, $lecturerFaculties, $expertFaculties);
-        $roleImportIds = $this->appendRoleIdVocationalTrainiers($roleImportIds, $vocationalTrainerFaculties);
+        $roleImportIds = $this->appendRoleImportIdsStudentToArray($roleImportIds, $studentFaculties);
+        $roleImportIds = $this->appendRoleImportIdsLecturerToArray($roleImportIds, $lecturerFaculties);
+        $roleImportIds = $this->appendRoleImportIdAdminToArray($roleImportIds, $adminFaculties);
+        $roleImportIds = $this->appendRoleImportIdMediStaffToArray($roleImportIds, $lecturerFaculties, $expertFaculties);
+        $roleImportIds = $this->appendRoleImportIdSandboxToArray($roleImportIds, $lecturerFaculties, $expertFaculties);
+        $roleImportIds = $this->appendRoleImportIdVocationalTrainiersToArray($roleImportIds, $vocationalTrainerFaculties);
         return $roleImportIds;
     }
 
-    private function appendRoleIdsStudent(
+    private function appendCourseRoleImportIdsToArray() {
+
+    }
+
+    private function appendRoleImportIdsStudentToArray(
         array  $roleImportIds,
         string $studentFaculties
     ): array
@@ -97,7 +100,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $roleImportIds;
     }
 
-    private function appendRoleIdsLecturer(
+    private function appendRoleImportIdsLecturerToArray(
         array  $roleImportIds,
         string $lecturerFaculties
     ): array
@@ -111,7 +114,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $roleImportIds;
     }
 
-    private function appendRoleIdAdmin(
+    private function appendRoleImportIdAdminToArray(
         array  $roleImportIds,
         string $adminFaculties
     ): array
@@ -125,7 +128,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $roleImportIds;
     }
 
-    private function appendRoleIdSandbox(
+    private function appendRoleImportIdSandboxToArray(
         array  $roleImportIds,
         string $lecturerFaculties,
         string $expertFaculties,
@@ -137,7 +140,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $roleImportIds;
     }
 
-    private function appendRoleIdMediStaff(
+    private function appendRoleImportIdMediStaffToArray(
         array  $roleImportIds,
         string $lecturerFaculties,
         string $expertFaculties,
@@ -149,7 +152,7 @@ class MediExcelUserQueryRepository implements Ports\User\UserQueryRepository
         return $roleImportIds;
     }
 
-    private function appendRoleIdVocationalTrainiers(
+    private function appendRoleImportIdVocationalTrainiersToArray(
         array  $roleImportIds,
         string $vocationalTrainerFaculties,
     ): array

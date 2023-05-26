@@ -6,10 +6,10 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
 class HandleSubscriptions implements IncomingMessage
 {
     private function __construct(
-        public Domain\ValueObjects\MediUserImportId $userId,
-        public string                               $additionalFieldName,
-        public null|int|string                      $newAdditionalFieldValue,
-        public null|int|string                      $oldAdditionalFieldValue,
+        public Domain\ValueObjects\MediUserImportId  $userId,
+        public string                                $additionalFieldName,
+        public null|int|string                       $newAdditionalFieldValue,
+        public null|int|string                       $oldAdditionalFieldValue,
         public Domain\ValueObjects\MediGeneralRoleId $roleId
     ) {
 

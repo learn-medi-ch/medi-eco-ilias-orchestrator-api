@@ -39,8 +39,70 @@ class Service
         }
     }
 
+    public function createMediFacultiesCourses(): void
+    {
+        foreach (ValueObjects\FacultyId::cases() as $facultyId) {
+            $this->createMediFacultyCoursesForPersonGroups($facultyId->value);
+        }
+    }
+
+    private function createMediFacultyCoursesForPersonGroups(string $facultyId): void
+    {
+        //course for faculty group (gremium) vocational trainers
+        $this->createCourse(
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_VOCATIONAL_TRAINERS->toCourseImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_VOCATIONAL_TRAINERS->toCourseTitle($facultyId),
+        );
+
+        //course for faculty group (gremium) lecturers
+        $this->createCourse(
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_LECTURERS->toCourseImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_LECTURERS->toCourseTitle($facultyId),
+        );
+
+        //course for faculty group (gremium) experts
+        $this->createCourse(
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_EXPERTS->toCourseImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_EXPERTS->toCourseTitle($facultyId),
+        );
+
+
+        //course for faculty group (gremium) students
+        $this->createCourse(
+            ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_STUDENTS->toCourseImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_STUDENTS->toCourseTitle($facultyId),
+        );
+    }
+
+    private function createFacultySchoolClassCourse(string $facultyId, string $schoolClassName)
+    {
+        //school class under the purview of a faculty
+        $this->createCourse(
+            ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toImportId($facultyId),
+
+
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_VOCATIONAL_TRAINERS->toCourseImportId($facultyId),
+            ValueObjects\MediFacultyCourseId::FACULTY_GROUP_VOCATIONAL_TRAINERS->toCourseTitle($facultyId),
+        );
+    }
+
+    private function createCourse(string $parentImportId, string $importId, string $title)
+    {
+        $repository = $this->outbounds->courseRepository;
+        $course = $repository->getCourseByImportId($importId);
+        match ($course) {
+            null => $repository->createCourse($parentImportId, $importId, $title),
+            default => []
+        };
+    }
+
     private function createMediFacultyCategories(string $facultyId): void
     {
+        //root node of faculty tree
         $this->createCategory(
             ValueObjects\MediGeneralCategoryId::FACULTIES->toImportId(),
             ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId),
@@ -48,16 +110,19 @@ class Service
         );
 
         $facultyRootImportId = ValueObjects\MediFacultyCategoryId::FACULTY_ROOT->toImportId($facultyId);
+        //node for curriculums
         $this->createCategory(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_CURRICULUM->toTitle($facultyId),
         );
+        //node for groups
         $this->createCategory(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toImportId($facultyId),
             ValueObjects\MediFacultyCategoryId::FACULTY_GROUPES->toTitle($facultyId),
         );
+        //node for school classes
         $this->createCategory(
             $facultyRootImportId,
             ValueObjects\MediFacultyCategoryId::FACULTY_SCHOOL_CLASSES->toImportId($facultyId),
@@ -273,8 +338,6 @@ class Service
 
     private function subscribeToRoles(string $userImportId, array $roleImportIds): void
     {
-        print_r($roleImportIds);
-
         $iliasUserRepository = $this->outbounds->iliasUserRepository;
         $subscribedRoleImportIds = $iliasUserRepository->getSubscribedRoleImportIds($userImportId);
         foreach ($roleImportIds as $roleImportIdToSubscribeTo) {

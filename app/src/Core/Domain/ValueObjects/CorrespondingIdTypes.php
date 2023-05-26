@@ -1,7 +1,8 @@
 <?php
+
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
-enum IdType: string
+class CorrespondingIdTypes
 {
-    case IMPORT_ID = "import_id";
+
 }

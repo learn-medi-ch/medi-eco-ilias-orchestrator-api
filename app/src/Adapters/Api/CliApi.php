@@ -25,11 +25,11 @@ class CliApi
         return new self(
             Ports\Service::new(
                 Ports\Outbounds::new(
+                    Adapters\Repositories\IliasCourse\IliasCourseRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasCategory\IliasCategoryRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasRole\IliasRoleRepository::new($iliasRestApiClient),
                     Adapters\Repositories\IliasUser\IliasUserRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath),
-                    Adapters\Dispatchers\HttpMessageDispatcher::new($config)
+                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath)
                 )
             ),
         );
