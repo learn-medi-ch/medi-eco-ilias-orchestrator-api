@@ -2,24 +2,24 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports\{TreePorts};
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports\{Tree};
 
 final readonly class Repositories
 {
 
     private function __construct(
-        public TreePorts\Repository $spaceRepository,
-        public TreePorts\Repository $roomRepository,
-        public TreePorts\Repository $roleRepository
+        public Tree\Repository $spaceRepository,
+        public Tree\Repository $roomRepository,
+        public Tree\Repository $roleRepository
     )
     {
 
     }
 
     public static function new(
-        TreePorts\Repository $spaceRepository,
-        TreePorts\Repository $roomRepository,
-        TreePorts\Repository $roleRepository
+        Tree\Repository $spaceRepository,
+        Tree\Repository $roomRepository,
+        Tree\Repository $roleRepository
     )
     {
         return new self(...get_defined_vars());

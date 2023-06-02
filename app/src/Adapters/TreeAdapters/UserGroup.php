@@ -2,9 +2,9 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
-enum UserGroup: string implements TreePorts\UserGroup
+enum UserGroup: string implements Tree\UserGroup
 {
     case ADMINS = "admins";
     case EXPERTS = "experts";
@@ -35,7 +35,7 @@ enum UserGroup: string implements TreePorts\UserGroup
     }
 
     /**
-     * @return ?Room[]
+     * @return ?RoomStructure[]
      */
     public function rooms(): ?array
     {
@@ -45,10 +45,10 @@ enum UserGroup: string implements TreePorts\UserGroup
             UserGroup::LECTURERS,
             UserGroup::STUDENTS,
             UserGroup::VOCATIONAL_TRAINERS => [
-                Room::USER_GROUP_COLLABORATION
+                RoomStructure::USER_GROUP_COLLABORATION
             ],
             UserGroup::STUDENTS_CLASS => [
-                Room::CLASS_ROOM
+                RoomStructure::CLASS_ROOM
             ]
         };
     }

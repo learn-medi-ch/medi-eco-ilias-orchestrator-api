@@ -2,9 +2,9 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
-enum Role: string implements TreePorts\Role
+enum Role: string implements Tree\Role
 {
     case VIEW = "view";
     case EDIT = "edit";

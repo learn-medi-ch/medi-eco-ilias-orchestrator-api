@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
 interface SpaceNodeChilds
 {

@@ -28,12 +28,7 @@ class HttpApi
 
         return new self(
             Ports\Service::new(
-                Ports\Outbounds::new(
-                    $config,
-                    TreeAdapters\SpaceRepository::new($iliasRestApiClient),
-                    TreeAdapters\RoomRepository::new($iliasRestApiClient),
-                    TreeAdapters\RoleRepository::new($iliasRestApiClient),
-                )
+                $config
             )
         );
     }

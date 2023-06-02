@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
 
 interface UserGroup
@@ -14,7 +14,7 @@ interface UserGroup
 
 
     /**
-     * @return ?Room[]
+     * @return ?RoomStructure[]
      */
     function rooms(): ?array;
 }

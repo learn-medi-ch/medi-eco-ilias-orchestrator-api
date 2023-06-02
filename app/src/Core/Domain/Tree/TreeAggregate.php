@@ -2,7 +2,7 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label\Dictionary;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label\Language;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\UserGroupNode;
@@ -23,7 +23,7 @@ final class TreeAggregate
         return new self(...get_defined_vars());
     }
 
-    public function create(string $uniqueNameParent, TreePorts\Space $rootSpace): SpaceNode
+    public function create(string $uniqueNameParent, Tree\SpaceStructure $rootSpace): SpaceNode
     {
         $this->createSpaceNode($uniqueNameParent, $rootSpace);
         return $this->rootNode;
@@ -38,8 +38,8 @@ final class TreeAggregate
     }
 
     private function createSpaceNode(
-        string          $uniqueNameParent,
-        TreePorts\Space $space,
+        string              $uniqueNameParent,
+        Tree\SpaceStructure $space,
     ): SpaceNode
     {
         $uniqueName = $this->createUniqueName($space->name(), $uniqueNameParent);
@@ -56,8 +56,7 @@ final class TreeAggregate
 
     private function label(string $uniqueName): string
     {
-        //todo
-        return $this->dictionary->get(Language::DE, $uniqueName);
+        return $this->dictionary->read($uniqueName);
     }
 
     private function createSpaceNodes(
@@ -90,7 +89,7 @@ final class TreeAggregate
 
     private function createRoomNode(
         string         $uniqueNameParent,
-        TreePorts\Room $room
+        Tree\RoomStructure $room
     )
     {
         $uniqueName = $this->createUniqueName($uniqueNameParent, $room->name());
@@ -117,7 +116,7 @@ final class TreeAggregate
 
     private function createUserGroupNode(
         string              $uniqueNameParent,
-        TreePorts\UserGroup $userGroup,
+        Tree\UserGroup $userGroup,
     )
     {
         $uniqueName = $this->createUniqueName($uniqueNameParent, $userGroup->name());
@@ -145,7 +144,7 @@ final class TreeAggregate
 
     private function createRoleNode(
         string         $uniqueNameParent,
-        TreePorts\Role $role,
+        Tree\Role $role,
     )
     {
         $uniqueName = $this->createUniqueName($uniqueNameParent, $role->name());

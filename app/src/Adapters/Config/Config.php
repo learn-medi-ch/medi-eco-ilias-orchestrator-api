@@ -2,27 +2,41 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Label, Label\Dictionary, Tree};
-use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters\{Space, Room, Role, UserGroup};
 
-final readonly class Config implements Ports\Config
+//todo
+use FluxIliasBaseApi\Adapter\Category\CategoryDiffDto;
+use FluxIliasBaseApi\Adapter\Object\DefaultObjectType;
+use FluxIliasBaseApi\Adapter\Object\ObjectDto;
+use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters\{
+    SpaceStructure,
+    RoomStructure,
+    Role,
+    ArrayTransitions,
+    StringTransitions,
+    UserGroup
+};
+use stdClass;
+
+final readonly class Config implements Ports\Transitions
 {
-    // TODO: Implement getDictionary() method.
-    public Label\Dictionary $dictionary;
+
     public Tree\SpaceNode $tree;
 
+
     private function __construct(
-    public string $name,
-    public string $excelImportDirectoryPath,
-)
-{
-    $this->dictionary = Label\Dictionary::new();
-    $this->fillDictionary();
+        public string              $name,
+        public string              $excelImportDirectoryPath,
+        private Labels             $labels,
+        private IliasRestApiClient $iliasRestApiClient,
+        private ArrayTransitions   $arrayTransitions,
+        private StringTransitions  $stringTransitions
+    )
+    {
 
-
-    $this->tree = $this->createTree($this->dictionary);
-}
+    }
 
     public static function new(): self //todo instance
     {
@@ -31,39 +45,120 @@ final readonly class Config implements Ports\Config
         return new self(
             $name,
             EnvName::MEDI_ECO_ILIAS_ORCHESTRATOR_ORBITAL_EXCEL_IMPORT_PATH->toConfigValue(),
+            Labels::new(),
+            IliasRestApiClient::new(),
+            ArrayTransitions::new(),
+            StringTransitions::new()
         );
     }
 
-    private function fillDictionary(): Label\Dictionary
-{
-    $appendLabel = fn(string $uniqueName, string $en, string $de) => $this->appendLabelToDictionary($uniqueName, $en, $de);
-    $uniqueName = fn(array $nodeTypes) => $this->createUniqueName($nodeTypes);
-
-    $appendLabel($uniqueName([Space::UNITS]), "Units", "Bildungsgänge");
-    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_AT]), "AT", "AT");
-    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA]), "BMA", "BMA");
-    $appendLabel($uniqueName([Space::UNITS, Space::MEDI_BMA, Room::GENERAL_INFORMATIONS]), "BMA General", "BMA Allgemein");
-}
-
-
-    private function createUniqueName(array $nodeTypes): string
-{
-    $nodeTypes = array_map(
-        fn($nodeType) => $nodeType->value,
-        $nodeTypes
-    );
-    return Tree\Path::new($nodeTypes)->toKebabCase();
-}
-
-    private function appendLabelToDictionary(string $uniqueName, string $en, string $de): void
-{
-    $this->dictionary
-        ->append(Label\Language::EN, $uniqueName, $en)
-        ->append(Label\Language::DE, $uniqueName, $de);
-}
-
-    public function dictionary(): Dictionary
-    {
-        return $this->dictionary;
+    public function settings(): Ports\Settings {
+        /** @var Ports\Settings $settings */
+        $settings = new stdClass();
+        $settings->systemRootSpaceNode =
     }
+
+
+    /**
+     * @throws \Exception
+     */
+    public function appendIndexedLabesToDictionary(array $labelDictionary, callable $language): array
+    {
+        $labels = fn() => $this->labels->ofLanguage($language(), fn($value) => $this->stringTransitions->spaceToKebabCase($value));
+
+        return $this->arrayTransitions->appendIndexedValues($labelDictionary, $labels);
+    }
+
+
+    /**
+     * @param SpaceNode $parentSpaceNode
+     * @param $spaces ():Spaces[]
+     * @return SpaceNode $spaceNode
+     */
+    public function createOrUpdateSpacesOfNode(SpaceNode $parentSpaceNode, callable $spaces): SpaceNode
+    {
+        foreach ($spaces() as $space) {
+            match (property_exists($parentSpaceNode->spaces, $space->uniqueName())) {
+                false => $this->iliasRestApiClient->createCategoryToImportId($parentSpaceNode->uniqueName, $this->categoryDiffDtoOfSpace($space)),
+                true => $this->iliasRestApiClient->updateCategoryByImportId($parentSpaceNode->uniqueName, $this->categoryDiffDtoOfSpace($space)),
+            };
+            $parentSpaceNode->{$space->uniqueName()} = $space;
+        }
+
+        return $parentSpaceNode;
+    }
+
+    public function categoryDiffDtoOfSpace(SpaceStructure|stdClass $space): CategoryDiffDto|stdClass
+    {
+        return CategoryDiffDto::new($space->name(), $this->label($space->name()));
+    }
+
+    public function label(string $uniqueId): string
+    {
+        return $uniqueId; //todo
+    }
+
+    public function spaceElement(Ports\Tree\SpaceStructureNode|stdClass $spaceStructureNode): Ports\Tree\SpaceElement
+    {
+        $refId = 1;
+        $categoryDto = $this->iliasRestApiClient->getCategoryByRefId(1);
+
+        /**
+         * @var Ports\Tree\SpaceElement|stdClass $spaceElement
+         */
+        $spaceElement = new stdClass();
+        $spaceElement->uniqueName = fn () => $spaceStructureNode->uniqueName();
+        $spaceElement->spaces = fn() => array_reduce($spaceStructure->spaces(), function(Ports\Tree\SpaceElement $element, Ports\Tree\SpaceStructure $structure) {
+            /**
+             * @var Ports\Tree\SpaceStructureNode|stdClass $childStructureNode
+             */
+            $childStructureNode = clone $structure;
+            $childStructureNode->uniqueName = fn() =>
+        });
+
+        $spaceElement->rooms = fn() => array_reduce($spaceStructure->rooms(), fn(Ports\Tree\RoomElement $element, Ports\Tree\RoomStructure $structure) => $this->roomElement($structure));
+
+
+        $spaceNode = SpaceNode::new(SystemSettings::SYSTEM_ROOT_SPACE_NODE->value, $categoryDto->title);
+
+        $children = fn() => $this->iliasRestApiClient->getChildrenByRefId($refId);
+
+        $catagories = fn() => array_filter($children(), fn(ObjectDto $objectDto) => $objectDto->type === DefaultObjectType::CATEGORY);
+        $courses = fn() => array_filter($children(), fn(ObjectDto $objectDto) => $objectDto->type === DefaultObjectType::COURSE);
+
+        $spaceNode = $this->readChildSpaces($spaceNode, fn() => $catagories());
+        $spaceNode = $this->readChildRooms($spaceNode, fn() => $courses());
+    }
+
+    public function roomElement(Ports\Tree\SpaceStructure|stdClass $spaceStructure): Ports\Tree\RoomElement
+    {
+        /**
+         * @var Ports\Tree\RoomElement|stdClass $roomElement
+         */
+        $roomElement = new stdClass();
+        $roomElement->
+    }
+
+    public function readChildSpaces(SpaceNode $spaceNode, callable $childCategories): SpaceNode
+    {
+        foreach ($childCategories() as $category) {
+            /**
+             * @var ObjectDto $category
+             */
+            $spaceNode->{$category->import_id} = SpaceNode::new($category->import_id, $category->title);
+            $spaceNode = $this->readChildSpaces($spaceNode, fn() => $this->iliasRestApiClient->getChildrenByImportId($spaceNode->uniqueName));
+
+        }
+    }
+
+    public function readChildRooms(SpaceNode $spaceNode, callable $childCourses): SpaceNode
+    {
+        foreach ($childCourses() as $course) {
+            /**
+             * @var ObjectDto $course
+             */
+
+        }
+    }
+
 }

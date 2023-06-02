@@ -5,11 +5,12 @@ namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
 use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
+use MediEco\IliasUserOrchestratorOrbital\Core\{Ports,Domain};
 
 class CliApi
 {
     private $counter = 0;
+    private Config $config;
 
     private function __construct(
         private Ports\Service $service
@@ -20,27 +21,21 @@ class CliApi
 
     public static function new(): self
     {
-        $config = Config::new();
         $iliasRestApiClient = IliasRestApiClient::new();
         return new self(
             Ports\Service::new(
-                Ports\Outbounds::new(
-                    Adapters\Repositories\IliasCourse\RoomRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasCategory\RoleRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasRole\SpaceRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\IliasUser\UserRepository::new($iliasRestApiClient),
-                    Adapters\Repositories\MediExcel\MediExcelUserQueryRepository::new($config->excelImportDirectoryPath)
-                )
+                Config::new()
             ),
         );
     }
 
     public function install(): void
     {
-        $this->service->createMediGeneralCategories();
+        $this->service->createOrUpdateSpaceTrees($this->config->readSystemRootSpaceNode(System\Settings:: )
+        /*$this->service->createMediGeneralCategories();
         $this->service->createMediFacultiesCategories();
         $this->service->createMediGeneralRoles();
-        $this->service->createMediFacultiesRoles();
+        $this->service->createMediFacultiesRoles();*/
     }
 
     public function importUsers(Ports\Messages\ImportUsers $importUsers): void

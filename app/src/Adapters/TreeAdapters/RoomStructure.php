@@ -2,9 +2,9 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
 
-use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\TreePorts;
+use  MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
-enum Room: string implements TreePorts\Room
+enum RoomStructure: string implements Tree\RoomStructure
 {
     case USER_GROUP_COLLABORATION = "user_group_collaboration";
     case GENERAL_INFORMATIONS = "general_informations";
@@ -15,6 +15,4 @@ enum Room: string implements TreePorts\Room
     {
         return $this->name();
     }
-
-
 }

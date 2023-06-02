@@ -1,42 +1,52 @@
 <?php
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports;
-
-use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Tree, Label, Tree\SpaceNode};
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree\SpaceStructure;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\{Tree, Label, System};
 use  MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 
 //todo split up in userService, CategoryService, RoleService....
-final readonly class Service
+final class Service
 {
+    private Label\Dictionary $dictionary;
 
     private function __construct(
-        private Label\Dictionary  $dictionary,
-        private Tree\Repositories $repositories
+        private System\Settings|\stdClass $settings,
+        private Transitions $transitions,
     )
     {
+        $labelDictionary = Label\Dictionary::new();
 
+        foreach(Label\Language::cases() as $language) {
+            $labelDictionary->append($language, $this->transitions->appendIndexedLabesToDictionary([], fn() => $language));
+        }
     }
 
-    public static function new(Outbounds $outbounds): Service
+    public static function new(
+        Transitions $transitions
+    ): Service
     {
-        return new self($outbounds->dictionary, $outbounds->repositories);
+        /**
+         * @var System\Settings $settings
+         */
+        $settings = new \stdClass();
+        return new self($settings, $transitions);
     }
 
     /**
-     * @param string $uniqueNameParent
-     * @param TreePorts\Space $rootSpace
-     * @return void
+     * @return SpaceStructure[] $spaces
      */
-    public function createTreeNodes(
-        string          $uniqueNameParent,
-        TreePorts\Space $rootSpace
-    ): void
+    public function createOrUpdateSpaceTrees(
+        Tree\SpaceNode $parentSpaceNode,
+        callable $createOrUpdateSpaceTrees
+    ): Tree\SpaceNode
     {
-        $rootNode = Tree\TreeAggregate::new($this->dictionary)->create($uniqueNameParent, $rootSpace);
+        return $createOrUpdateSpaceTrees($parentSpaceNode);
 
-        $this->repositories->spaceRepository->create($uniqueNameParent, $rootNode->uniqueName, $rootNode->label);
-        $this->createSpaces($rootNode->uniqueName, $rootNode->spaces);
+       // $rootNode = Tree\TreeAggregate::new($this->dictionary)->create($uniqueNameParent, $rootSpace);
+
+        //$this->repositories->spaceRepository->create($uniqueNameParent, $rootNode->uniqueName, $rootNode->label);
+        //$this->createSpaces($rootNode->uniqueName, $rootNode->spaces);
     }
 
 

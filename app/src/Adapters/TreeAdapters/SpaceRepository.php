@@ -9,11 +9,11 @@ use MediEco\IliasUserOrchestratorOrbital\Core\{Domain\Tree\RoleNode,
     Domain\Tree\RoomNode,
     Domain\Tree\SpaceNode,
     Domain\Tree\UserGroup,
-    Ports\TreePorts,
+    Ports\Tree,
     Domain,
     Ports\User\UserDto};
 
-final readonly class SpaceRepository implements TreePorts\Repository
+final readonly class SpaceRepository implements Tree\Repository
 {
     private function __construct(
         private IliasRestApiClient $iliasRestApiClient,

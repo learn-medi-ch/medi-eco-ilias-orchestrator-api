@@ -2,35 +2,33 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Label;
 
-
-
 final class Dictionary
 {
-    private array $labels = [];
 
-    private function __construct()
+    private function __construct(
+        private array $labels
+    )
     {
-        $this->labels = array_map(
-            fn($language) => $language->value,
-            Language::cases()
-        );
+
     }
 
-    public static function new(): self
+    public static function new(
+
+    ): self
     {
-        return new self();
+        return new self(Language::cases());
     }
 
-    public function append(Language $language, string $uniqueName, string $label): self
+    public function append(Language $language, array $labels): self
     {
-        $this->labels[$language->value][$uniqueName] = $label;
+        $this->labels[$language->value] = $labels;
         return $this;
     }
 
-    public function get(Language $language, string $uniqueName): string {
+    public function read(Language $language, string $uniqueName): string {
         if(in_array($uniqueName, $this->labels[$language->value]) === false) {
             return $uniqueName;
         }
-        return  $this->labels[$language->value][$uniqueName];
+        return  $this->labels[$uniqueName];
     }
 }

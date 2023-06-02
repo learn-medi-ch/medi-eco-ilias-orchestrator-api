@@ -2,19 +2,17 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\Space;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree\UserGroup;
 
-final readonly class SpaceNode
+final readonly class SpaceNode implements SpaceElement
 {
 
     private function __construct(
         public string $uniqueName,
         public string $label,
-        public ?array $spaces,
-        public ?array $rooms,
-        public ?array $roles,
-        public ?array $userGroups
+        public object $spaces,
+        public object $rooms,
+        public object $roles,
+        public object $userGroups
     )
     {
 
@@ -23,19 +21,19 @@ final readonly class SpaceNode
     /**
      * @param string $uniqueName
      * @param string $label
-     * @param array|null $spaces
-     * @param array|null $rooms
-     * @param array|null $userGroups
-     * @param array|null $roles
+     * @param object $spaces
+     * @param object $rooms
+     * @param object $userGroups
+     * @param object $roles
      * @return static  //todo
      */
     public static function new(
         string $uniqueName,
         string $label,
-        ?array $spaces,
-        ?array $rooms,
-        ?array $userGroups,
-        ?array $roles,
+        object $spaces = new \stdClass(),
+        object $rooms = new \stdClass(),
+        object $userGroups = new \stdClass(),
+        object $roles = new \stdClass()
     ): self
     {
         return new self(...get_defined_vars());
