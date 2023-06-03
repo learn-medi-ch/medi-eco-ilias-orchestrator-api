@@ -26,10 +26,10 @@ final readonly class RoomNode
     }
 
     public static function new(
-        string $name,
-        string $uniqueName,
+        StringValue $name,
+        StringValue $uniqueName,
     ): self
     {
-        return new self(StringValue::new($name), StringValue::new($uniqueName));
+        return new self(...get_defined_vars());
     }
 }

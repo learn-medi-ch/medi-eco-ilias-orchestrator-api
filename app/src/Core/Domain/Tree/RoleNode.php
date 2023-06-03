@@ -11,8 +11,8 @@ use MediEco\IliasUserOrchestratorOrbital\Core\Domain\StringValue;
 final readonly class RoleNode
 {
     private function __construct(
-        public StringValue $uniqueName,
-        public StringValue $label
+        public StringValue $name,
+        public StringValue $uniqueName
     )
     {
 
@@ -26,11 +26,11 @@ final readonly class RoleNode
     }
 
     public static function new(
-        string $name,
-        string $uniqueName,
+        StringValue $name,
+        StringValue $uniqueName,
     ): self
     {
-        return new self(StringValue::new($name), StringValue::new($uniqueName));
+        return new self(...get_defined_vars());
     }
 
 }
