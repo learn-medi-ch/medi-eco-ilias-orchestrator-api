@@ -8,7 +8,7 @@ interface UserGroup
     function name(): string;
 
     /**
-     * @return ?Role[]
+     * @return ?RoleStructure[]
      */
     function roles(): ?array;
 

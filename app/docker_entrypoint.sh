@@ -22,6 +22,10 @@ function startServer {
   flux-eco-http-synapse.start
 }
 
+function install {
+  php /opt/medi-eco-ilias-user-orchestrator-orbital/app/cli/install.php
+}
+
 printBanner
 extractMessageDispatcherConfig
 startServer

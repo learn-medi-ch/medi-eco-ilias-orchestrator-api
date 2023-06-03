@@ -2,26 +2,25 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
-
 interface SpaceStructure
 {
     public function name(): string;
     /**
-     * @return ?SpaceStructure[]
+     * @return SpaceStructure[]
      */
-    public function spaces(): ?array;
+    public function spaces(): array;
     /**
-     * @return ?RoomStructure[]
+     * @return RoomStructure[]
      */
-    public function rooms(): ?array;
+    public function rooms(): array;
 
     /**
-     * @return ?UserGroup[]
+     * @return UserGroup[]
      */
-    public function userGroups(): ?array;
+    public function userGroups(): array;
 
     /**
-     * @return ?Role[]
+     * @return ?RoleStructure[]
      */
     public function roles(): ?array;
 }

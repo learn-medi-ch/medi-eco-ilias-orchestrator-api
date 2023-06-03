@@ -2,18 +2,14 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
 
-use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
-use MediEco\IliasUserOrchestratorOrbital\Adapters;
-use MediEco\IliasUserOrchestratorOrbital\Core\{Ports,Domain};
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports\Service;
 
 class CliApi
 {
-    private $counter = 0;
-    private Config $config;
 
     private function __construct(
-        private Ports\Service $service
+        private Config $config
     )
     {
 
@@ -21,37 +17,31 @@ class CliApi
 
     public static function new(): self
     {
-        $iliasRestApiClient = IliasRestApiClient::new();
         return new self(
-            Ports\Service::new(
-                Config::new()
-            ),
+            Config::new()
         );
     }
 
     public function install(): void
     {
-        $this->service->createOrUpdateSpaceTrees($this->config->readSystemRootSpaceNode(System\Settings:: )
-        /*$this->service->createMediGeneralCategories();
-        $this->service->createMediFacultiesCategories();
-        $this->service->createMediGeneralRoles();
-        $this->service->createMediFacultiesRoles();*/
-    }
+        $service = Service::new();
+        $systemRootSpaceNodes = $service->createTree($this->config->rootStructure());
 
-    public function importUsers(Ports\Messages\ImportUsers $importUsers): void
-    {
-        $this->service->importUsers($importUsers, fn($responseObject) => $this->publish($responseObject));
-    }
+        //debug
+        foreach ($systemRootSpaceNodes->spaces() as $systemRootSpaceNode) {
+            echo $systemRootSpaceNode->uniqueName() . PHP_EOL;
+            foreach ($systemRootSpaceNode->spaces() as $space) {
+                echo $space->uniqueName() . PHP_EOL;
+                foreach ($space->spaces() as $node) {
+                    echo $node->uniqueName() . PHP_EOL;
 
-    public function publish(object|string $responseObject): void
-    {
-        $this->counter = $this->counter + 1;
-        $response = $responseObject;
-        if (is_string($responseObject) === false) {
-            $response = json_encode($responseObject, JSON_PRETTY_PRINT);
+                    foreach ($node->rooms() as $room) {
+                        echo $room->name() . PHP_EOL;
+                    }
+                }
+            }
         }
 
-        echo $response . " " . $this->counter . PHP_EOL;
     }
 
 }

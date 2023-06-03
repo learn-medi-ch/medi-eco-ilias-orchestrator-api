@@ -8,16 +8,16 @@ enum SpaceStructure: string implements Tree\SpaceStructure
 {
     case ROOT = "root";
     case UNITS = "units";
-    case MEDI_AMB = "medi_AMB";
-    case MEDI_AT = "medi_AT";
-    case MEDI_BMA = "medi_BMA";
-    case MEDI_DH = "medi_DH";
-    case MEDI_MTR = "medi_MTR";
-    case MEDI_OT = "medi_OT";
-    case MEDI_RS = "medi_RS";
+    case AMB = "amb";
+    case AT = "at";
+    case BMA = "bma";
+    case DH = "dh";
+    case MTR = "mtr";
+    case OT = "ot";
+    case RS = "rs";
     case CLASSES = "classes";
     case CURRICULUMS = "curriculums";
-    case PERSON_GROUPS_SPACE = "person_groups_space";
+    case PERSON_GROUPS = "personGroups";
 
 
     public function name(): string
@@ -25,77 +25,54 @@ enum SpaceStructure: string implements Tree\SpaceStructure
         return $this->value;
     }
 
-    public function uniqueName(): string
-    {
-        if ($this->parent() === null) {
-            return $this->name();
-        }
-        return $this->parent()->uniqueName();
-    }
-
-    //todo build this and spaces structure from the same data structure
-    public function parent(): ?Tree\SpaceStructure
-    {
-        return match ($this) {
-            SpaceStructure::ROOT => null,
-            SpaceStructure::UNITS => SpaceStructure::ROOT,
-            SpaceStructure::MEDI_AMB,
-            SpaceStructure::MEDI_AT,
-            SpaceStructure::MEDI_BMA,
-            SpaceStructure::MEDI_DH,
-            SpaceStructure::MEDI_MTR,
-            SpaceStructure::MEDI_OT,
-            SpaceStructure::MEDI_RS => SpaceStructure::UNITS
-        };
-    }
-
-    public function spaces(): ?array
+    public function spaces(): array
     {
         return match ($this) {
             SpaceStructure::ROOT => [SpaceStructure::UNITS],
             SpaceStructure::UNITS => [
-                SpaceStructure::MEDI_AMB,
-                SpaceStructure::MEDI_AT,
-                SpaceStructure::MEDI_BMA,
-                SpaceStructure::MEDI_DH,
-                SpaceStructure::MEDI_MTR,
-                SpaceStructure::MEDI_OT,
-                SpaceStructure::MEDI_RS
+                SpaceStructure::AMB,
+                SpaceStructure::AT,
+                SpaceStructure::BMA,
+                SpaceStructure::DH,
+                SpaceStructure::MTR,
+                SpaceStructure::OT,
+                SpaceStructure::RS
             ],
-            SpaceStructure::MEDI_AMB,
-            SpaceStructure::MEDI_AT,
-            SpaceStructure::MEDI_BMA,
-            SpaceStructure::MEDI_DH,
-            SpaceStructure::MEDI_MTR,
-            SpaceStructure::MEDI_OT,
-            SpaceStructure::MEDI_RS => [
-                SpaceStructure::PERSON_GROUPS_SPACE,
+            SpaceStructure::AMB,
+            SpaceStructure::AT,
+            SpaceStructure::BMA,
+            SpaceStructure::DH,
+            SpaceStructure::MTR,
+            SpaceStructure::OT,
+            SpaceStructure::RS => [
+                SpaceStructure::PERSON_GROUPS,
                 SpaceStructure::CLASSES,
                 SpaceStructure::CURRICULUMS,
-            ]
+            ],
+            self::CLASSES, self::CURRICULUMS, self::PERSON_GROUPS => []
         };
     }
 
-    public function rooms(): ?array
+    public function rooms(): array
     {
         return match ($this) {
-            SpaceStructure::UNITS => null,
+            SpaceStructure::UNITS => [],
             default => [RoomStructure::GENERAL_INFORMATIONS]
         };
     }
 
 
-    public function userGroups(): ?array
+    public function userGroups(): array
     {
         return match ($this) {
-            SpaceStructure::UNITS => null,
-            SpaceStructure::MEDI_AMB,
-            SpaceStructure::MEDI_AT,
-            SpaceStructure::MEDI_BMA,
-            SpaceStructure::MEDI_DH,
-            SpaceStructure::MEDI_MTR,
-            SpaceStructure::MEDI_OT,
-            SpaceStructure::MEDI_RS => [
+            SpaceStructure::UNITS => [],
+            SpaceStructure::AMB,
+            SpaceStructure::AT,
+            SpaceStructure::BMA,
+            SpaceStructure::DH,
+            SpaceStructure::MTR,
+            SpaceStructure::OT,
+            SpaceStructure::RS => [
                 UserGroup::ADMINS,
                 UserGroup::EXPERTS,
                 UserGroup::LECTURERS,
@@ -108,14 +85,14 @@ enum SpaceStructure: string implements Tree\SpaceStructure
     public function roles(): array
     {
         return match ($this) {
-            SpaceStructure::MEDI_AMB,
-            SpaceStructure::MEDI_AT,
-            SpaceStructure::MEDI_BMA,
-            SpaceStructure::MEDI_DH,
-            SpaceStructure::MEDI_MTR,
-            SpaceStructure::MEDI_OT,
-            SpaceStructure::MEDI_RS => $this->mediUnitRoles(), //todo with map?
-            default => null
+            SpaceStructure::AMB,
+            SpaceStructure::AT,
+            SpaceStructure::BMA,
+            SpaceStructure::DH,
+            SpaceStructure::MTR,
+            SpaceStructure::OT,
+            SpaceStructure::RS => $this->mediUnitRoles(), //todo with map?
+            default => []
         };
     }
 
@@ -127,7 +104,7 @@ enum SpaceStructure: string implements Tree\SpaceStructure
                 UserGroup::ADMINS,
                 UserGroup::EXPERTS,
                 UserGroup::VOCATIONAL_TRAINERS => $userGroup->roles(),
-                default => null
+                default => []
             };
         }
         return $roles;

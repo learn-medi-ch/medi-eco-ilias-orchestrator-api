@@ -1,4 +1,4 @@
-FROM fluxms/flux-eco-biotope:v2022-01-08-4 AS medi-eco-ilias-user-orchestrator-orbital
+FROM fluxms/flux-eco-biotope:v2022-01-08-5 AS medi-eco-ilias-user-orchestrator-orbital
 USER root
 RUN apk add --update busybox-suid
 # |-------------------------------------------------------------------------- \
@@ -26,10 +26,10 @@ RUN chmod a+rx /usr/local/bin/medi-eco-ilias-user-orchestrator-orbital.import-al
 
 RUN medi-eco-ilias-user-orchestrator-orbital.install-libraries
 
-COPY ./app/cron/crontab /etc/crontab
-RUN crontab /etc/crontab
-RUN touch /var/log/cron.log
-CMD crond -f
+#COPY ./app/cron/crontab /etc/crontab
+#RUN crontab /etc/crontab
+#RUN touch /var/log/cron.log
+#CMD crond -f
 
 WORKDIR /opt/medi-eco-ilias-user-orchestrator-orbital/app
 

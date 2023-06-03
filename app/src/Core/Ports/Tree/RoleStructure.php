@@ -3,7 +3,7 @@
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Ports\Tree;
 
 
-interface Role
+interface RoleStructure
 {
     public function name(): string;
 }

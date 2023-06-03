@@ -2,38 +2,42 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ArrayValue;
+use MediEco\IliasUserOrchestratorOrbital\Core\Domain\StringValue;
 
-final readonly class SpaceNode implements SpaceElement
+/**
+ * @method string name()
+ * @method string uniqueName()
+ * @method SpaceNode[] spaces()
+ * @method RoomNode[] rooms()
+ * @method RoleNode[] roles()
+ */
+final readonly class SpaceNode
 {
-
     private function __construct(
-        public string $uniqueName,
-        public string $label,
-        public object $spaces,
-        public object $rooms,
-        public object $roles,
-        public object $userGroups
+        public StringValue $name,
+        public StringValue $uniqueName,
+        public ArrayValue $spaces,
+        public ArrayValue $rooms,
+        public ArrayValue $roles,
     )
     {
 
     }
 
-    /**
-     * @param string $uniqueName
-     * @param string $label
-     * @param object $spaces
-     * @param object $rooms
-     * @param object $userGroups
-     * @param object $roles
-     * @return static  //todo
-     */
+    public function __call($method, $args)
+    {
+        if (is_callable(array($this, $method))) {
+            return call_user_func_array($this->$method, $args);
+        }
+    }
+
     public static function new(
-        string $uniqueName,
-        string $label,
-        object $spaces = new \stdClass(),
-        object $rooms = new \stdClass(),
-        object $userGroups = new \stdClass(),
-        object $roles = new \stdClass()
+        StringValue $name,
+        StringValue $uniqueName,
+        ArrayValue $spaces,
+        ArrayValue $rooms,
+        ArrayValue $roles,
     ): self
     {
         return new self(...get_defined_vars());

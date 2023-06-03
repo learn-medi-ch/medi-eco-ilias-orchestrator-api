@@ -5,7 +5,6 @@ namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
 use Exception;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters\SpaceStructure;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain;
-use stdClass;
 use WeakMap;
 
 //todo find a "pure" way
@@ -29,7 +28,7 @@ final class Labels
     /**
      * @throws Exception
      */
-    public function ofLanguage(Domain\Label\Language $language, callable $spaceToKebabCase): array
+    public function ofLanguage(Domain\Label\Language $language, callable $spaceToKebabCase): string
     {
         if (!isset($this->translations[$language])) {
             if (method_exists($this, $language->value) === false) {
@@ -47,9 +46,9 @@ final class Labels
 
         return [
                 $toKebabCase([SpaceStructure::UNITS->value]) => "Bildungsgänge",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_AT]) => "AT",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_BMA]) => "BMA",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_BMA]) => "BMA Allgemein"
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::AT]) => "AT",
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::BMA]) => "BMA",
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::BMA]) => "BMA Allgemein"
             ];
 
     }
@@ -60,9 +59,9 @@ final class Labels
 
        return [
                 $toKebabCase([SpaceStructure::UNITS]) => "Units",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_AT]) => "AT",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_BMA]) => "BMA",
-                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::MEDI_BMA]) => "BMA General"
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::AT]) => "AT",
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::BMA]) => "BMA",
+                $toKebabCase([SpaceStructure::UNITS, SpaceStructure::BMA]) => "BMA General"
             ];
     }
 

@@ -20,16 +20,16 @@ enum UserGroup: string implements Tree\UserGroup
 
 
     /**
-     * @return ?Role[]
+     * @return ?RoleStructure[]
      */
     public function roles(): ?array
     {
         return match ($this) {
-            self::ADMINS => [Role::ADMINISTRATE],
-            self::EXPERTS => [Role::EDIT],
+            self::ADMINS => [RoleStructure::ADMINISTRATE],
+            self::EXPERTS => [RoleStructure::EDIT],
             self::LECTURERS,
             self::STUDENTS,
-            self::VOCATIONAL_TRAINERS => [Role::VIEW],
+            self::VOCATIONAL_TRAINERS => [RoleStructure::VIEW],
             self::STUDENTS_CLASS => null
         };
     }
