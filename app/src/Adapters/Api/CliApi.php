@@ -2,8 +2,9 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Api;
 
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
-use MediEco\IliasUserOrchestratorOrbital\Core\Ports\Service;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Lms\LanguageType;
 
 class CliApi
 {
@@ -18,30 +19,28 @@ class CliApi
     public static function new(): self
     {
         return new self(
-            Config::new()
+            Config::new(LanguageType::DE)
         );
     }
 
     public function install(): void
     {
-        $service = Service::new();
-        $systemRootSpaceNodes = $service->createTree($this->config->rootStructure());
+        $service = Ports\Service::new($this->config->lmsService(), $this->config->stateService());
+        $service->createOrUpdateTree($this->config->lmsRootSpace());
+    }
 
-        //debug
-        foreach ($systemRootSpaceNodes->spaces() as $systemRootSpaceNode) {
-            echo $systemRootSpaceNode->uniqueName() . PHP_EOL;
-            foreach ($systemRootSpaceNode->spaces() as $space) {
-                echo $space->uniqueName() . PHP_EOL;
-                foreach ($space->spaces() as $node) {
-                    echo $node->uniqueName() . PHP_EOL;
-
-                    foreach ($node->rooms() as $room) {
-                        echo $room->name() . PHP_EOL;
-                    }
-                }
-            }
-        }
+    public function createNewClasses(): void {
 
     }
+
+
+    private function createNewClasseAndCorrespondingCurriculum(
+        string          $className,
+        Ports\Lms\Space $curriculumSpace
+    ): void
+    {
+
+    }
+
 
 }

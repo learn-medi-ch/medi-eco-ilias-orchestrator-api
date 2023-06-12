@@ -1,28 +1,42 @@
 <?php
 
 namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Config;
-use MediEco\IliasUserOrchestratorOrbital\Adapters\{TreeAdapters};
 
+use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Lms\LanguageType;
+use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 
 final readonly class Config
 {
 
 
     private function __construct(
+        private LanguageType $currentUserLanguage
     )
     {
 
     }
 
-    public static function new(): self //todo instance
+    public static function new(
+        LanguageType $currentUserLanguage
+    ): self //todo instance
     {
         $name = 'medi-eco-ilias-user-orchestrator-orbital';
-
-        return new self();
+        return new self($currentUserLanguage);
     }
 
-    public function rootStructure(): TreeAdapters\SpaceStructure {
-        return TreeAdapters\SpaceStructure::ROOT;
+    public function lmsRootSpace(): Ports\Lms\Space
+    {
+        return Lms\SpaceType::ROOT;
+    }
+
+    public function lmsService(): Ports\Lms\Service
+    {
+        return Lms\Service::new($this->currentUserLanguage);
+    }
+
+    public function stateService(): Ports\States\Service
+    {
+        return States\Service::new();
     }
 
 

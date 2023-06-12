@@ -7,7 +7,7 @@ use FluxIliasRestApiClient\Adapter\Api\IliasRestApiClient;
 use Swoole\Http;
 use MediEco\IliasUserOrchestratorOrbital\Adapters\Config\Config;
 use MediEco\IliasUserOrchestratorOrbital\Adapters;
-use MediEco\IliasUserOrchestratorOrbital\Adapters\TreeAdapters;
+use MediEco\IliasUserOrchestratorOrbital\Adapters\IliasAdapters;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects;
 

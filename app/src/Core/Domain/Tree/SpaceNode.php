@@ -2,42 +2,42 @@
 
 namespace MediEco\IliasUserOrchestratorOrbital\Core\Domain\Tree;
 
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ArrayValue;
-use MediEco\IliasUserOrchestratorOrbital\Core\Domain\StringValue;
-
-/**
- * @method string name()
- * @method string uniqueName()
- * @method SpaceNode[] spaces()
- * @method RoomNode[] rooms()
- * @method RoleNode[] roles()
- */
 final readonly class SpaceNode
 {
+    /**
+     * @param string $name
+     * @param string $uniqueName
+     * @param SpaceNode[] $spaceNodes
+     * @param RoomNode[] $roomNodes
+     * @param RoleNode[] $roleNodes
+     */
     private function __construct(
-        public StringValue $name,
-        public StringValue $uniqueName,
-        public ArrayValue $spaces,
-        public ArrayValue $rooms,
-        public ArrayValue $roles,
+        public string $name,
+        public string $uniqueName,
+        public array  $spaceNodes,
+        public array  $roomNodes,
+        public array  $roleNodes,
     )
     {
 
     }
 
-    public function __call($method, $args)
-    {
-        if (is_callable(array($this, $method))) {
-            return call_user_func_array($this->$method, $args);
-        }
-    }
-
+    /**
+     * @param string $name
+     * @param string $uniqueName
+     * @param SpaceNode[] $spaceNodes
+     * @param RoomNode[] $roomNodes
+     * @param RoleNode[] $roleNodes
+     * @return static
+     *
+     * //todo think about state params -> lazy loading?
+     */
     public static function new(
-        StringValue $name,
-        StringValue $uniqueName,
-        ArrayValue $spaces,
-        ArrayValue $rooms,
-        ArrayValue $roles,
+        string $name,
+        string $uniqueName,
+        array  $spaceNodes,
+        array  $roomNodes,
+        array  $roleNodes,
     ): self
     {
         return new self(...get_defined_vars());

@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Repositories\MediExcel;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\DataSourceAdapters;
 
 use MediEco\IliasUserOrchestratorOrbital\Core\Domain\ValueObjects\UserData;
 use MediEco\IliasUserOrchestratorOrbital\Core\Ports;

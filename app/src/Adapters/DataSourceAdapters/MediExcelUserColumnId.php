@@ -1,6 +1,6 @@
 <?php
 
-namespace MediEco\IliasUserOrchestratorOrbital\Adapters\Repositories\MediExcel;
+namespace MediEco\IliasUserOrchestratorOrbital\Adapters\DataSourceAdapters;
 
 enum MediExcelUserColumnId: int
 {
